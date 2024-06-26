@@ -1,0 +1,37 @@
+.segmented {
+    display: flex;
+}
+
+.segmented button {
+    flex: 1;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-color: #f0f0f0;
+}
+
+.segmented button:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.segmented button:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+.segmented button:hover {
+    background-color: #eaeaea;
+}
+
+@media screen and (min-width: 768px) {
+    .login-form{
+       padding-top: 25vh;
+
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .login-form {
+        padding-top: 18vh;
+    }
+
+}

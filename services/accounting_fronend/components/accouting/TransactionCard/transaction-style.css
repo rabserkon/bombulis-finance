@@ -1,0 +1,14 @@
+@media screen and (min-width: 768px) {
+    .transaction-form{
+        min-width: 400px;
+        width: 25%;
+
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .transaction-form {
+        width: 100%;
+    }
+
+}

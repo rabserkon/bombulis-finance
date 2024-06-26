@@ -1,0 +1,57 @@
+
+
+.margin-bottom-small {
+    margin-bottom: 16px;
+}
+
+.margin-bottom-medium {
+    margin-bottom: 24px;
+}
+
+.margin-bottom-large {
+    margin-bottom: 32px;
+}
+
+.custom-card {
+    margin: 15px;
+    display: block;
+}
+
+.form-Item{
+    display: flex;
+    justifyContent: flex-end;
+}
+
+.form-elem{
+    display: flex;
+    align-items: center;
+}
+.form-item {
+    display: flex;
+    align-items: center;
+}
+
+@media screen and (min-width: 768px) {
+    .custom-card {
+        min-width: 400px;
+        width: 40%;
+
+    }
+    .custom-card-modal{
+        min-width: 400px;
+        max-width: 500px;
+        width: 40%;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .custom-card {
+        width: 95%;
+        min-width: 95%;
+        max-width: none;
+    }
+
+    .custom-card-modal{
+        width: 90%;
+    }
+}
