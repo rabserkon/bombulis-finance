@@ -5,11 +5,6 @@
 /services/accounting/.idea
 /services/accounting_fronend/node_modules
 
-application.yml
-application.properties
-
-*.properties
-*.xml
 target/
 build/
 .gradle/
