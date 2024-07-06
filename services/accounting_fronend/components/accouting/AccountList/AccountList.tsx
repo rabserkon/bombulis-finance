@@ -9,26 +9,24 @@ import {useDispatch, useSelector} from "react-redux";
 
 const changeAccountType = [
     {
-        title: 'archive',
-        value: '0-0',
-        key: '0-0',
+        title: 'Архивные',
+        value: 'archival',
+        key: "0-0",
 
     },]
 
-function AccountList({jwtToken}){
+function AccountList({currencyList, accountTypes}){
     const dispatch = useDispatch();
     const [createAccountModalVisible, setCreateAccountModalVisible] = useState(false);
     const [initialValues, setInitialValues] = useState(null);
-    const [currencyList, setCurrencyList] = useState([]);
     const accounts = useSelector(state => state.accounts);
     const [visibleAccountItems, setVisibleAccountItems] = useState(6);
     const [loading, setLoading] = useState(false);
     const [value, setValue] = useState();
-    const [createAccountForm] = Form.useForm();
-    const showMoreButtonVisible = accounts.length > visibleAccountItems;
+
 
     const onChange = (newValue) => {
-        setValue(newValue);
+        console.log(newValue)
     };
 
     const createAccountShowModal = (newValue) => {
@@ -40,7 +38,6 @@ function AccountList({jwtToken}){
         axios.get(`/api/finance/v1/accounts/information`,{
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': jwtToken,
             },
             params: {
                 accountId: accountId
@@ -68,42 +65,12 @@ function AccountList({jwtToken}){
         console.log('onPopupScroll', e);
     };
 
-
-
-    useEffect(() => {
-        // Загружаем список валют с сервера
-        axios.get('/api/finance/v1/currencies/all', {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': jwtToken,
-            }
-        })
-            .then(response => {
-                setCurrencyList(response.data.currencies);
-            })
-            .catch(error => {
-                notification.error({
-                    message: 'Ошибка!',
-                    description: 'Ошибка загрузки валют',
-                });
-                console.error('Ошибка загрузки списка валют:', error);
-            });
-
-        if (!currencyList) {
-            notification.error({
-                message: 'Ошибка!',
-                description: 'Ошибка загрузки валют',
-            });
-        }
-    }, []);
-
     useEffect(() => {
         async function fetchData() {
             try {
                 const response = await axios.get('/api/finance/v1/accounts/list', {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': jwtToken,
                     },
                     params: {
 
@@ -115,9 +82,8 @@ function AccountList({jwtToken}){
                 console.error('Error fetching data:', error);
             }
         }
-
         fetchData();
-    }, [jwtToken]);
+    }, []);
 
     const handleUpdateAccounts = (accountsList) => {
         const action = {
@@ -129,7 +95,7 @@ function AccountList({jwtToken}){
 
 
     return (
-
+        accounts != null ? (
         <Card title="Счета" className={'custom-card'} bordered={false} style={{
             width: '45%'
         }}>
@@ -197,7 +163,7 @@ function AccountList({jwtToken}){
 
                 )}
                 loadMore={
-                    showMoreButtonVisible && (
+                    accounts.length > visibleAccountItems && (
                         <div style={{ textAlign: 'center', marginTop: 12 }}>
                             <Button onClick={handleShowMore}>Показать еще</Button>
                         </div>
@@ -206,14 +172,14 @@ function AccountList({jwtToken}){
             />)}
 
             <CreateAccountModal
+                accountTypes={accountTypes}
                 visible={createAccountModalVisible}
-                jwtToken={jwtToken}
                 currencyList={currencyList}
                 setVisible={setCreateAccountModalVisible}
                 values={initialValues}
                 setValues={setInitialValues}
             />
-        </Card>
+        </Card>) : (null)
     );
 
 };

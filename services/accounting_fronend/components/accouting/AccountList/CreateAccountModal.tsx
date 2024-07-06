@@ -1,15 +1,16 @@
-import {Button, Form, List, Select, Space, TreeSelect, Input, Col, Row, notification, Switch, InputNumber} from "antd";
+import {Button, Form, List, Select, Space, TreeSelect, Input, Col, Row, notification, Switch, InputNumber, } from "antd";
+const { Option } = Select;
 import Modal from "antd/es/modal/Modal";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import DeleteConfirmationModal from "./DeleteAccountConfirmationModal";
 import {useDispatch, useSelector} from "react-redux";
 
-const CreateAccountModal = ({visible: initialVisible, values: initialValues, currencyList, jwtToken, updateAccountList, setVisible, setValues}) => {
+const CreateAccountModal = ({visible: initialVisible, values: initialValues, currencyList,  updateAccountList, setVisible, setValues, accountTypes}) => {
     const dispatch = useDispatch();
     const [createAccountForm] = Form.useForm();
     const [defaultCurrencyValue, setDefaultCurrencyValue] = useState(null);
-    const [accountTypeList, setAccountTypeList] = useState([]);
+    const [accountTypeList, setAccountTypeList] = useState(accountTypes);
     const [selectedAccountType, setSelectedAccountType] = useState(null);
     const [selectedAccountCurrency, setSelectedAccountCurrency] = useState(null);
     const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
@@ -32,24 +33,6 @@ const CreateAccountModal = ({visible: initialVisible, values: initialValues, cur
 
     const disabledEdit = initialValues !== null;
 
-    useEffect(() => {
-        axios.get('/api/finance/v1/accounts/types', {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': jwtToken,
-            }
-        })
-            .then(response => {
-                setAccountTypeList(response.data);
-            })
-            .catch(error => {
-                notification.error({
-                    message: 'Ошибка!',
-                    description: 'Ошибка загрузки типов',
-                });
-                console.error('Ошибка загрузки списка валют:', error);
-            });
-    }, [jwtToken]);
 
     const cancelAccountShowModal = (newValue) => {
         createAccountForm.resetFields();
@@ -117,7 +100,6 @@ const CreateAccountModal = ({visible: initialVisible, values: initialValues, cur
                     axios.put('/api/finance/v1/accounts/edit', values, {
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': jwtToken,
                         },
                     }).then((response) => {
                         notification.success({
@@ -153,7 +135,6 @@ const CreateAccountModal = ({visible: initialVisible, values: initialValues, cur
                     axios.post('/api/finance/v1/accounts/create', values, {
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': jwtToken,
                         },
                     })
                         .then((response) => {

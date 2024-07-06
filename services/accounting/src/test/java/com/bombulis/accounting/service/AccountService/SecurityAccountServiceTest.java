@@ -10,6 +10,7 @@ import com.bombulis.accounting.repository.CurrencyRepository;
 import com.bombulis.accounting.service.AccountService.exception.AccountOtherType;
 import com.bombulis.accounting.service.CurrencyService.CurrencyNonFound;
 import com.bombulis.accounting.service.UserService.NotFoundUser;
+import com.bombulis.accounting.service.UserService.UserException;
 import com.bombulis.accounting.service.UserService.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,7 +42,7 @@ public class SecurityAccountServiceTest {
     }
 
     @Test
-    public void testCreateAccount() throws CurrencyNonFound, IOException, NotFoundUser, AccountOtherType {
+    public void testCreateAccount() throws CurrencyNonFound, IOException, UserException, AccountOtherType {
         // Arrange
         Long userId = 1L;
         String ticker = "AAPL";
@@ -49,10 +51,10 @@ public class SecurityAccountServiceTest {
 
         User user = new User();
         user.setUserId(userId);
-        when(userService.findUser(userId)).thenReturn(user);
+        when(userService.findUserById(userId)).thenReturn(user);
 
         Currency currency = new Currency( "United States Dollar", "USD");
-        when(currencyRepository.findCurrencyByIsoCode("USD")).thenReturn(currency);
+        when(currencyRepository.findCurrencyByIsoCode("USD")).thenReturn(Optional.of(currency));
 
         // Act
         SecurityPositionAccount result = accountService.createAccount(securityAccountDTO, userId);

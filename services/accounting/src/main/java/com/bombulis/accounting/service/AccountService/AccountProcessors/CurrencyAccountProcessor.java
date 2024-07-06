@@ -22,10 +22,8 @@ public class CurrencyAccountProcessor implements AccountProcessor {
     @Override
     public <T extends Account> T processCreateAccount(AccountDTO accountDTO, User user) throws CurrencyNonFound {
         CurrencyAccount account = new CurrencyAccount(accountDTO.getName(), user);
-        Currency currency = currencyRepository.findCurrencyByIsoCode(accountDTO.getCurrency());
-        if (currency == null) {
-            throw new CurrencyNonFound("Currency with code " + accountDTO.getCurrency() + " not found");
-        }
+        Currency currency = currencyRepository.findCurrencyByIsoCode(accountDTO.getCurrency())
+                .orElseThrow(()->new CurrencyNonFound("Currency with code " + accountDTO.getCurrency() + " not found"));
         account.setCurrency(currency);
         account.setDescription(accountDTO.getDescription());
         account.setType(accountDTO.getType());

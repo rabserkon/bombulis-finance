@@ -2,29 +2,26 @@ package com.bombulis.accounting.service.AuthenticationService;
 
 import com.bombulis.accounting.component.MultiAuthToken;
 import com.bombulis.accounting.component.Role;
-import com.bombulis.accounting.component.exception.AuthenticationJwtException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.bitwalker.useragentutils.UserAgent;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.lettuce.core.RedisConnectionException;
+import com.bombulis.accounting.entity.User;
+import com.bombulis.accounting.service.UserService.UserService;
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @PropertySource("classpath:application-${spring.profiles.active}.properties")
-public class AuthenticationServiceImpl implements AuthenticationService, JwtService, JWTControlService {
+@Transactional
+public class AuthenticationServiceImpl implements AuthenticationService, JwtService {
 
     @Value("${jwt.secret}")
     private String secret;
@@ -32,93 +29,92 @@ public class AuthenticationServiceImpl implements AuthenticationService, JwtServ
     @Value("${jwt.expiration}")
     private Long expiration;
 
-    private RedisTemplate redisTemplate;
-    private ObjectMapper objectMapper;
+    @Autowired
+    private UserService userService;
+
+    private final String SERVICE_NAME = "finance-service";
+
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public MultiAuthToken authenticationByJWT(String JWToken, HttpServletRequest request) throws AuthenticationJwtException {
+    @Override
+    public MultiAuthToken authenticationByJwt(String token, HttpServletRequest request)  {
+        return this.authenticationByJwt(token);
+    }
+
+    @Override
+    public MultiAuthToken authenticationByJwt(String token)  {
         try {
-            Map<String,Object> userData = this.decodeToken(JWToken);
-            Long userId = ((Integer) userData.get("id")).longValue();
-            boolean sessionControl = this.validateSession((String) userData.get("sessionToken"), userId, request);
-            if (!sessionControl){
-                throw new AuthenticationJwtException("jwt not valid");
+            Map<String,Object> authData = this.decodeToken(token);
+            Long userId = ((Integer) authData.get("id")).longValue();
+            Object service = authData.get("service");
+            if (service == null) {
+                throw new BadCredentialsException("Your token valid, you need generate token on local service...");
+            }
+            if (!(service.toString()).equals(SERVICE_NAME)){
+                throw new BadCredentialsException("Your token valid, you need generate token on local service...");
             }
             return new MultiAuthToken(
                     userId,
-                    (Collection<Role>) userData.get("roles"),
-                    (String) userData.get("passwordEncrypted"),
-                    (String) userData.get("uuid")
+                    (List<Role>) convertRoles(authData.get("roles")),
+                    (String) authData.get("uuid")
             );
         } catch (JwtException | NullPointerException | ClassCastException e){
-            throw new AuthenticationJwtException(e.getMessage());
-        } catch (RedisConnectionException e){
-            throw new AuthenticationJwtException("Service not is not available");
+            throw new BadCredentialsException("decode token problem");
         }
     }
 
     @Override
-    public MultiAuthToken authenticationByJWT(String JWToken) throws AuthenticationJwtException {
-        return this.authenticationByJWT(JWToken, null);
+    public String generateLocalToken(String token) {
+        try {
+            Map<String,Object> globalTokenClaims = this.decodeToken(token);
+            Long userId = ((Integer) globalTokenClaims.get("id")).longValue();
+            final User user = userService.existUser(userId);
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("id", userId);
+            claims.put("uuid", (String) globalTokenClaims.get("uuid"));
+            claims.put("roles", user.getRoles().stream().map(i -> new Role(i.getName())).collect(Collectors.toList()));
+            claims.put("sessionToken", (String) globalTokenClaims.get("sessionToken"));
+            claims.put("global-token", (String) globalTokenClaims.get("sessionToken"));
+            claims.put("service", SERVICE_NAME);
+            return createToken(claims, userId.toString());
+        } catch (JwtException | ClassCastException e){
+            throw new JwtException("decode token problem");
+        }
+    }
+
+    private String createToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+
+    private List<Role> convertRoles(Object rolesObject) {
+        List<Role> roles = new ArrayList<>();
+        if (rolesObject instanceof List) {
+            for (Object roleObj : (List<?>) rolesObject) {
+                if (roleObj instanceof LinkedHashMap) {
+                    LinkedHashMap<?, ?> roleMap = (LinkedHashMap<?, ?>) roleObj;
+                    Role role = new Role((String) roleMap.get("name"));
+                    roles.add(role);
+                }
+            }
+        }
+        return roles;
     }
 
     public Map<String, Object> decodeToken(String token) throws JwtException {
         try {
-            Claims claims = Jwts.parserBuilder()
+            Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(secret)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims;
+                    .parseClaimsJws(token);
+            return claims.getBody();
         } catch (JwtException ex) {
             throw new JwtException("Invalid or expired token", ex);
         }
-    }
-
-    @Override
-    public boolean validateSession(String sessionUUID, Long userId, HttpServletRequest request){
-       /* try {
-            String sessionKey = "session:" + sessionUUID;
-            String sessionInfoStr = (String) redisTemplate.opsForValue().get(sessionKey);
-            if (sessionInfoStr == null){
-                return false;
-            }
-
-            SessionInfo sessionInfo = objectMapper.readValue(sessionInfoStr, SessionInfo.class);
-            if (sessionInfo != null && sessionInfo.getUserId().equals(userId) && sessionInfo.isActive()) {
-                sessionInfo.setUpdateTime(new Date());
-                sessionInfo.setDevice(getBrowserData(request));
-                redisTemplate.opsForValue().set(sessionKey, objectMapper.writeValueAsString(sessionInfo));
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            return false;
-        }*/
-        return true;
-    }
-
-
-
-    public static String getBrowserData(HttpServletRequest request){
-        if (request ==  null){
-            return "websocket";
-        }
-        final UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
-        return  "Device: " + userAgent.getOperatingSystem().getDeviceType().getName()+ ", " +
-                userAgent.getOperatingSystem().getName() + ", " +
-                userAgent.getBrowser().getName() + " " +
-                userAgent.getBrowserVersion();
-    }
-
-    @Autowired
-    public void setRedisTemplate(RedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
-
-    @Autowired
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
     }
 }

@@ -1,6 +1,6 @@
 package com.bombulis.accounting.config;
 
-import com.bombulis.accounting.component.filter.JwtAuthenticationFilter;
+import com.bombulis.accounting.component.filter.JwtTokenFilter;
 import com.bombulis.accounting.service.AuthenticationService.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,30 +14,29 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:application-${spring.profiles.active}.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
     private AuthenticationService authenticationService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
-        jwtAuthenticationFilter.setAuthenticationService(authenticationService);
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        JwtTokenFilter jwtTokenFilter = new JwtTokenFilter();
+        jwtTokenFilter.setAuthenticationService(authenticationService);
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .cors().disable().csrf().disable()
+                .cors().disable()
+                .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/auth/create/token").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .anyRequest().authenticated()
-                /*.and()
-                .requiresChannel()
-                .antMatchers("/**")
-                .requiresSecure()
-                .anyRequest().requiresSecure()*/;
+                .anyRequest().authenticated();
     }
 
     @Bean
@@ -45,8 +44,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
-    public void setAuthenticationService(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
+
 }

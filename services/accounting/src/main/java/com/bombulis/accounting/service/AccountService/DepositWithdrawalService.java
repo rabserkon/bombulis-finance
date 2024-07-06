@@ -5,6 +5,7 @@ import com.bombulis.accounting.repository.AccountRepository;
 import com.bombulis.accounting.repository.CurrencyRepository;
 import com.bombulis.accounting.service.CurrencyService.CurrencyNonFound;
 import com.bombulis.accounting.service.UserService.NotFoundUser;
+import com.bombulis.accounting.service.UserService.UserException;
 import com.bombulis.accounting.service.UserService.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,16 +21,16 @@ public class DepositWithdrawalService implements FinancingSourceService {
     private UserService userService;
 
     @Override
-    public FinancingSource createFinancingSource(String name, String currencyCode, Long userId) throws NotFoundUser, CurrencyNonFound {
-        User user = userService.findUser(userId);
+    public FinancingSource createFinancingSource(String name, String currencyCode, Long userId) throws UserException, CurrencyNonFound {
+        User user = userService.findUserById(userId);
         Currency currency = this.findCurrency(currencyCode);
         Account account = new FinancingSource(name, currency, user);
         return (FinancingSource) accountRepository.save(account);
     }
 
     @Override
-    public WithdrawalDestination createWithdrawalAccount(String name, String currencyCode, Long userId) throws NotFoundUser, CurrencyNonFound {
-        User user = userService.findUser(userId);
+    public WithdrawalDestination createWithdrawalAccount(String name, String currencyCode, Long userId) throws UserException, CurrencyNonFound {
+        User user = userService.findUserById(userId);
         Currency currency = this.findCurrency(currencyCode);
         Account account = new WithdrawalDestination(name, currency, user);
         return (WithdrawalDestination) accountRepository.save(account);
@@ -55,10 +56,8 @@ public class DepositWithdrawalService implements FinancingSourceService {
 
 
     private Currency findCurrency(String currencyCode) throws CurrencyNonFound {
-        Currency currency = currencyRepository.findCurrencyByIsoCode(currencyCode);
-        if (currency == null) {
-            throw new CurrencyNonFound("Currency with code " + currencyCode + " not found");
-        }
+        Currency currency = currencyRepository.findCurrencyByIsoCode(currencyCode)
+                .orElseThrow(()-> new CurrencyNonFound("Currency with code " + currencyCode + " not found"));
         return currency;
     }
 

@@ -14,10 +14,10 @@ import java.util.Date;
 public class TransactionCurrencyExchange extends TransactionAccount {
 
     @Getter @Setter
-    private BigDecimal receivedAmount; // Полученная сумма
+    private BigDecimal receivedAmount;
 
     @Getter @Setter
-    private BigDecimal exchangeRate; // Курс обмена
+    private BigDecimal exchangeRate;
 
     public TransactionCurrencyExchange(String description,
                                        BigDecimal sendAmount,

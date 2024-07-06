@@ -34,11 +34,19 @@
         <javassist.version>3.25.0-GA</javassist.version>
         <spring-boot-starter-web.version>2.5.5</spring-boot-starter-web.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
+        <spring-boot-starter-oauth2-resource-server.version>3.3.1</spring-boot-starter-oauth2-resource-server.version>
+        <logback-classic.version>1.2.6</logback-classic.version>
+        <gson.version>2.8.8</gson.version>
+        <spring-kafka.version>2.7.0</spring-kafka.version>
+        <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
+        <jaxb-runtime.version>2.3.2</jaxb-runtime.version>
+        <junit-jupiter-api.version>5.11.0-M2</junit-jupiter-api.version>
+        <jakarta.xml.bind-api.version>2.3.2</jakarta.xml.bind-api.version>
+        <mockito-core.version>3.9.0</mockito-core.version>
+        <junit.version>4.13</junit.version>
     </properties>
 
     <dependencies>
-        <!--spring-core-->
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -49,7 +57,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-boot-starter-web.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
@@ -60,7 +67,6 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!--spring-websocket-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-websocket</artifactId>
@@ -71,7 +77,6 @@
             <artifactId>spring-messaging</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!--spring-security-->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
@@ -252,48 +257,38 @@
             <version>${validation-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.yahoofinance-api</groupId>
-            <artifactId>YahooFinanceAPI</artifactId>
-            <version>3.14.0</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.9.0</version>
+            <version>${mockito-core.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>com.nasdaq.API</groupId>
             <artifactId>NasdaqAPI</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
-              <!-- API, java.xml.bind module -->
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>2.3.2</version>
+            <version>${jakarta.xml.bind-api.version}</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.11.0-M2</version>
+            <version>${junit-jupiter-api.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.2</version>
+            <version>${jaxb-runtime.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
@@ -303,22 +298,27 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>6.2.0.Final</version>
+            <version>${hibernate-validator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
-            <version>2.7.0</version>
+            <version>${spring-kafka.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.8</version> <!-- Укажите актуальную версию Gson -->
+            <version>${gson.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.6</version>
+            <version>${logback-classic.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>2.5.2.RELEASE</version>
         </dependency>
     </dependencies>
 

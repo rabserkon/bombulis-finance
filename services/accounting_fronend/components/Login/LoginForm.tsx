@@ -2,17 +2,8 @@ import React, {useEffect, useState} from "react";
 import {
     Button,
     Form,
-    List,
-    Select,
-    Space,
-    TreeSelect,
     Input,
-    Col,
-    Row,
     notification,
-    Switch,
-    InputNumber,
-    Segmented,
     Typography,
     Radio, Card
 } from "antd";
@@ -35,30 +26,10 @@ function LoginForm(){
     ];
     const router = useRouter();
     const [form] = Form.useForm();
-    const handleSegmentChange = (value) => {
-
-        let byPassword = false;
-        let byCode = false;
-        switch (value) {
-            case 'Password':
-                byPassword = true;
-                break;
-            case 'Code':
-                byCode = true;
-                break;
-            default:
-                break;
-        }
-        form.setFieldsValue({ byPassword, byCode });
-    };
 
     const handleChangeLoginMethod = (val) => {
 
     }
-
-    const handleVerificationCodeChange = (e) => {
-
-    };
 
     const resendAuthCode = () => {
         axios.post(`/api/auth/v1/validate/user`, null,{

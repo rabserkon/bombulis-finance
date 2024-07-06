@@ -1,5 +1,6 @@
 package com.bombulis.accounting.controller;
 
+import com.bombulis.accounting.dto.CurrencyDTO;
 import com.bombulis.accounting.service.AccountService.exception.ServerDataAssetsException;
 import com.bombulis.accounting.service.CurrencyService.CurrencyNonFound;
 import com.bombulis.accounting.service.CurrencyService.CurrencyService;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -27,9 +30,10 @@ public class CurrencyController {
     private ExchangeRateService rateService;
 
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getCurrencies(Authentication authentication){
+    public ResponseEntity<?> getCurrencies(){
         Map<String, Object> response = new HashMap<>();
-        response.put("currencies", currencyService.getAllCurrencies());
+        response.put("currencies", currencyService.getAllCurrencies().stream()
+                .map(i -> new CurrencyDTO(i)).collect(Collectors.toList()));
         return ResponseEntity.ok(response);
     }
 
@@ -45,6 +49,16 @@ public class CurrencyController {
         return ResponseEntity.ok(response);
     }
 
+    @RequestMapping(value = "/full/rates", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getFullCurrenciesRates(Authentication authentication) throws CurrencyNonFound, ServerDataAssetsException, IOException {
+        Map<String, Object> response = new HashMap<>();
+        response.put("currencies", rateService.getExchangeRate(
+                currencyService.getAllCurrencies(),
+                currencyService.getAllCurrencies(),
+                new Date()
+        ));
+        return ResponseEntity.ok(response);
+    }
 
     @Autowired
     public void setRateService(ExchangeRateService rateService) {

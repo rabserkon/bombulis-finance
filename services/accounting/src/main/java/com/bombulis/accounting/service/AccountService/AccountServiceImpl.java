@@ -4,17 +4,21 @@ import com.bombulis.accounting.dto.AccountEditDTO;
 import com.bombulis.accounting.dto.BalanceDTO;
 import com.bombulis.accounting.entity.Account;
 import com.bombulis.accounting.dto.AccountDTO;
+import com.bombulis.accounting.entity.AccountType;
 import com.bombulis.accounting.entity.FinancingSource;
 import com.bombulis.accounting.entity.User;
 import com.bombulis.accounting.entity.WithdrawalDestination;
 import com.bombulis.accounting.repository.AccountRepository;
+import com.bombulis.accounting.repository.AccountTypeRepository;
 import com.bombulis.accounting.service.AccountService.AccountProcessors.AccountProcessor;
 import com.bombulis.accounting.service.AccountService.AccountProcessors.AccountProcessorsFactory;
+import com.bombulis.accounting.service.AccountService.exception.AccountException;
 import com.bombulis.accounting.service.AccountService.exception.AccountNonFound;
 import com.bombulis.accounting.service.AccountService.exception.AccountOtherType;
 import com.bombulis.accounting.service.AccountService.exception.AccountTypeMismatchException;
 import com.bombulis.accounting.service.CurrencyService.CurrencyNonFound;
 import com.bombulis.accounting.service.UserService.NotFoundUser;
+import com.bombulis.accounting.service.UserService.UserException;
 import com.bombulis.accounting.service.UserService.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,28 +33,27 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class AccountServiceImpl implements AccountService{
+public class AccountServiceImpl implements AccountService, AccountTypeService{
 
     private AccountRepository accountRepository;
     private UserService userService;
     private AccountProcessorsFactory accountProcessorsFactory;
+    private AccountTypeRepository accountTypeRepository;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     @Transactional(readOnly = true)
     public <T extends Account> T findAccount(Long accountId, Long userId) throws AccountNonFound, AccountTypeMismatchException {
-        Account account = accountRepository.findAccountByIdAndUserUserIdAndDeletedFalse(accountId, userId);
-        if (account == null) {
-            throw new AccountNonFound("Account not found for account ID: " + accountId );
-        }
+        Account account = accountRepository.findAccountByIdAndUserUserIdAndDeletedFalse(accountId, userId)
+                .orElseThrow(() -> new AccountNonFound("Account non found"));
         return (T) account;
     }
 
     @Override
     @Transactional(isolation = Isolation.DEFAULT)
-    public <T extends Account> T createAccount(AccountDTO accountDTO, Long userId) throws CurrencyNonFound, NotFoundUser, AccountOtherType {
-        final User user = userService.findUser(userId);
+    public <T extends Account> T createAccount(AccountDTO accountDTO, Long userId) throws CurrencyNonFound, UserException, AccountOtherType {
+        final User user = userService.findUserById(userId);
         AccountProcessor accountProcessor = accountProcessorsFactory.getProcessor(accountDTO.getType());
         T account = accountProcessor.processCreateAccount(accountDTO, user);
         return account;
@@ -58,11 +61,9 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public <T extends Account> T deleteAccount(Long accountId, Long userId) throws AccountNonFound {
-        Account account = accountRepository.findAccountByIdAndUserUserIdAndDeletedFalse(accountId, userId);
-        if (account == null) {
-            throw new AccountNonFound("Account not found for account ID: " + accountId);
-        }
+    public <T extends Account> T deleteAccount(Long accountId, Long userId) throws AccountException {
+        Account account = accountRepository.findAccountByIdAndUserUserIdAndDeletedFalse(accountId, userId)
+                .orElseThrow(() -> new AccountNonFound("Account not found"));
         account.setDeleted(true);
         return (T) accountRepository.save(account);
     }
@@ -77,8 +78,9 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public <T extends Account> T editAccount(AccountEditDTO accountDTO, Long userId) throws CurrencyNonFound {
-        T account = (T) accountRepository.findAccountByIdAndUserUserId(accountDTO.getId(), userId);
+    public <T extends Account> T editAccount(AccountEditDTO accountDTO, Long userId) throws AccountNonFound{
+        Account account =  accountRepository.findAccountByIdAndUserUserId(accountDTO.getId(), userId)
+                    .orElseThrow(() -> new AccountNonFound("Account not found"));
         account.setDescription(accountDTO.getDescription());
         account.setName(accountDTO.getName());
         account.setArchive(accountDTO.isArchive());
@@ -88,6 +90,11 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public <T extends Account> T setBalance(Long accountId, Long userId, BalanceDTO balanceDTO) throws AccountNonFound {
         return null;
+    }
+
+    @Override
+    public List<AccountType> getAllTypes() {
+        return accountTypeRepository.findAccountTypeByArchivalFalse();
     }
 
     @Autowired
@@ -103,5 +110,10 @@ public class AccountServiceImpl implements AccountService{
     @Autowired
     public void setAccountProcessorsFactory(AccountProcessorsFactory accountProcessorsFactory) {
         this.accountProcessorsFactory = accountProcessorsFactory;
+    }
+
+    @Autowired
+    public void setAccountTypeRepository(AccountTypeRepository accountTypeRepository) {
+        this.accountTypeRepository = accountTypeRepository;
     }
 }

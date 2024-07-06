@@ -7,5 +7,7 @@ import java.util.List;
 public interface CurrencyService {
     List<Currency> getAllCurrencies();
 
+    Currency getMainUserCurrency(Long userId) throws CurrencyNonFound;
+
     Currency findCurrency(String currencyIsoCode) throws CurrencyNonFound;
 }

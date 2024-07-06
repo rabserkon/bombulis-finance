@@ -27,10 +27,7 @@ public class YahooExchangeRateService implements ExchangeRateService {
         Map<String, JsonObject> currencyWithRates = null;
         try {
             currencyWithRates = yahooClient.getTickersData(rates);
-        } catch (IOException e) {
-            throw new ServerDataAssetsException(e.getMessage());
-        }
-        Map<String, RateDTO> convertedMap = currencyWithRates.entrySet().stream()
+            Map<String, RateDTO> convertedMap = currencyWithRates.entrySet().stream()
                 .collect(Collectors.toMap(
                         entry -> {
                             String symbol = entry.getValue().get("symbol").getAsString();
@@ -46,11 +43,50 @@ public class YahooExchangeRateService implements ExchangeRateService {
                                     .build();
                         }
                 ));
-        return convertedMap;
+            return convertedMap;
+        } catch (IOException e) {
+            return new HashMap<>();
+        }
     }
 
     @Override
     public Map<String, RateDTO> getExchangeRate(Currency mainCurrency, Set<String> currencyCollection, Date date) throws ServerDataAssetsException {
         return null;
+    }
+
+    @Override
+    public Map<String, RateDTO> getExchangeRate(List<Currency> mainCurrency, List<Currency> currencyCollection, Date date) throws ServerDataAssetsException {
+        Iterator<Currency> var1 = mainCurrency.iterator();
+        List<String> ratesFull = new ArrayList<>();
+        YahooClient yahooClient = new YahooClient();
+        for (Currency main : mainCurrency) {
+            for (Currency currency : currencyCollection) {
+                if (!main.getIsoCode().equals(currency.getIsoCode())) {
+                    ratesFull.add(main.getIsoCode() + currency.getIsoCode() + "=X");
+                }
+            }
+        }
+        try {
+            Map<String, JsonObject> currencyWithRates = yahooClient.getTickersData(ratesFull);
+            Map<String, RateDTO> convertedMap = currencyWithRates.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            entry -> {
+                                String symbol = entry.getValue().get("symbol").getAsString();
+                                return symbol.substring(0,symbol.indexOf("=X"));
+                            },
+                            entry -> {
+                                String symbol = entry.getValue().get("symbol").getAsString();
+                                return RateDTO.builder()
+                                        .fullName(entry.getValue().get("longName").getAsString())
+                                        .exchangeRate(entry.getValue().get("price").getAsDouble())
+                                        .mainCurrency(symbol.substring(3,6))
+                                        .ticker(symbol.substring(0,6))
+                                        .build();
+                            }
+                    ));
+            return convertedMap;
+        } catch (IOException | StringIndexOutOfBoundsException e) {
+            return new HashMap<>();
+        }
     }
 }

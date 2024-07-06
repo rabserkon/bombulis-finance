@@ -25,7 +25,7 @@ public class CurrencyAccountBalanceProcessor implements BalanceProcessor{
     @Override
     public BalanceDTO process(Account account) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException {
         final Long accountId = account.getId();
-        BalanceDTO balanceDTO = new BalanceDTO(accountId,BigDecimal.ZERO);
+        BalanceDTO balanceDTO = new BalanceDTO(accountId, BigDecimal.ZERO);
         List<? extends TransactionAccount> transactions = transactionRepository.findTransactionAccountsBySenderAccountIdOrRecipientAccountId(accountId, accountId);
         for (TransactionAccount transaction : transactions) {
             TransactionProcessor transactionProcessor = transactionProcessorFactory.getProcessor(transaction.getType());

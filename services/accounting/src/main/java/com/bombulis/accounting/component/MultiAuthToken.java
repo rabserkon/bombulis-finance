@@ -21,13 +21,12 @@ public class  MultiAuthToken implements Authentication {
 
     public MultiAuthToken(Long userId,
                           Collection<Role> role,
-                          String password,
                           String uuidUser) {
         this.userId = userId;
         this.role = role;
-        this.password = password;
+        this.password = "[null]";
         this.uuidUser = uuidUser;
-        this.auth =true;
+        this.auth = true;
     }
 
     @Override

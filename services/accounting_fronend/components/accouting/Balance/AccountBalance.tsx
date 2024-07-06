@@ -3,7 +3,7 @@ import Statistic from "antd/es/statistic/Statistic";
 import Card from "antd/es/card/Card";
 
 
-function AccountBalance({jwtToken}){
+function AccountBalance(){
 
     return(
         <Card title="Баланс" bordered={false} className="custom-card">
@@ -11,7 +11,7 @@ function AccountBalance({jwtToken}){
                 <Segmented
                     options={['Daily', 'Weekly', 'Monthly', 'Yearly', "All"]}
                     onChange={(value) => {
-                        console.log(value); // string
+                        console.log(value);
                     }}
                     className="margin-bottom-small"
                 />

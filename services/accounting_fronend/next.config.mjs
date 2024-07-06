@@ -4,21 +4,21 @@ const nextConfig = {
         return [
             {
                 source: '/api/user/v1/:path*',
-                destination: 'http://localhost:8087/:path*',
+                destination: 'http://localhost:8080:path*',
             },
             {
                 source: '/api/finance/v1/:path*',
-                destination: 'http://localhost:8087/:path*',
+                destination: 'http://localhost:8080/:path*',
             },
             {
                 source: '/api/auth/v1/:path*',
-                destination: 'http://localhost:8087/:path*',
+                destination: 'http://localhost:8080/:path*',
             },
         ];
     },
     env: {
-        auth_url_module: 'http://localhost:8087',
-        finance_url_module: 'http://localhost:8087',
+        auth_url_module: 'http://localhost:8080',
+        finance_url_module: 'http://localhost:8080',
     },
     transpilePackages: [
         "@ant-design",

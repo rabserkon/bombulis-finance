@@ -66,7 +66,7 @@ function UserBar({ jwtToken }){
                     <div style={{ paddingRight: '16px' }}>
                         <Dropdown overlay={UserMenu} trigger={['click']}>
                             <div>
-                                <Text style={{ marginRight: '8px', marginBottom: 0 }}>{loading ? ('Loading...') : (userData?.userInfo.login)}</Text>
+                                <Text style={{ marginRight: '8px', marginBottom: 0 }}>{loading ? ('Loading...') : ("null")}</Text>
                                 <Avatar
                             size="large"
                             icon={loading ?  <UserOutlined /> : userData?.userInfo.cropAvatarPath}

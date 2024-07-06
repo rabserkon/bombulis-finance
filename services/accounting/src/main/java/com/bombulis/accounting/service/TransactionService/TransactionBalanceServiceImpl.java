@@ -6,6 +6,7 @@ import com.bombulis.accounting.dto.TransactionDTO;
 import com.bombulis.accounting.repository.AccountRepository;
 import com.bombulis.accounting.repository.TransactionRepository;
 import com.bombulis.accounting.repository.UserRepository;
+import com.bombulis.accounting.service.AccountService.exception.AccountException;
 import com.bombulis.accounting.service.AccountService.exception.AccountNonFound;
 import com.bombulis.accounting.service.AccountService.exception.AccountOtherType;
 import com.bombulis.accounting.service.AccountService.AccountService;
@@ -15,6 +16,7 @@ import com.bombulis.accounting.service.TransactionService.BalanceProcessors.Bala
 import com.bombulis.accounting.service.TransactionService.TransactionProcessors.TransactionProcessor;
 import com.bombulis.accounting.service.TransactionService.TransactionProcessors.TransactionProcessorFactory;
 import com.bombulis.accounting.service.TransactionService.exception.CurrencyMismatchException;
+import com.bombulis.accounting.service.UserService.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +41,9 @@ public class TransactionBalanceServiceImpl implements TransactionBalanceService 
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public TransactionAccount createTransaction(TransactionDTO transactionDTO, Long userId) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException {
-        User user = userRepository.findUserByUserId(userId);
+    public TransactionAccount createTransaction(TransactionDTO transactionDTO, Long userId) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, UserException {
+        User user = userRepository.findUserByUserId(userId)
+                .orElseThrow(()->new UserException("User not found"));
         TransactionProcessor processor = transactionProcessorFactory.getProcessor(transactionDTO.getType());
         TransactionAccount transactionAccount = processor.processCreateTransaction(transactionDTO, user);
         if (transactionAccount == null) {
@@ -73,8 +76,9 @@ public class TransactionBalanceServiceImpl implements TransactionBalanceService 
 
     @Override
     @Transactional(readOnly = true)
-    public BalanceDTO calculateBalance(Long accountId, Long userId) throws CurrencyMismatchException, AccountTypeMismatchException, AccountNonFound {
-        Account account = accountRepository.findAccountByIdAndUserUserId(accountId, userId);
+    public BalanceDTO calculateBalance(Long accountId, Long userId) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException {
+        Account account = accountRepository.findAccountByIdAndUserUserId(accountId, userId)
+                .orElseThrow(() -> new AccountNonFound("This account not found"));
         BalanceProcessor balanceProcessor = balanceProcessorFactory.getProcessor(account.getType());
         return balanceProcessor.process(account);
     }

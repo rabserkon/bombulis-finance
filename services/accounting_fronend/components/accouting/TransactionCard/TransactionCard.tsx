@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Card, Table, Collapse, Button, Tag, notification, Divider, Space, Typography, DatePicker} from 'antd';
+import {Table, Button, Tag, notification, Space, Typography, DatePicker} from 'antd';
 import moment from "moment";
 import axios from "axios";
-import {useSelector} from "react-redux";
 import TransactionDrawer from "./TransactionDrawer";
-import {SwapRightOutlined} from "@ant-design/icons";
 const { Paragraph, Text, Title } = Typography;
-const { Panel } = Collapse;
+import {useDispatch, useSelector} from "react-redux";
 
-const TransactionCard = ({  isDesktop}) => {
+const TransactionCard = () => {
     const accounts = useSelector(state => state.accounts);
-    const [transactionsList, setTransactionsList] = useState([]);
+    const transactions = useSelector(state => state.transactional)
+    const [transactionsList, setTransactionsList] = useState(transactions);
     const [drawerVisible, setDrawerVisible] = useState(false);
     const tags = {
         BUY: {
@@ -78,7 +77,21 @@ const TransactionCard = ({  isDesktop}) => {
             });
     }, [])
 
+
+    useEffect(()=>{
+        setTransactionsList(transactions)
+    }, [transactions])
+
     const columns = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+            render: () => null,
+            sorter: (a, b) => a.id - b.id,
+            sortOrder: 'descend',
+            hidden: true
+        },
         {
             title: 'Тип',
             dataIndex: 'type',
@@ -222,7 +235,6 @@ const TransactionCard = ({  isDesktop}) => {
                 }
             })
                 .then(response => {
-                    console.log(accounts)
                     const newTransactions = response.data.transactions;
                     const mergedTransactions = [ ...newTransactions];
                     const sortedTransactions = mergedTransactions.sort((a, b) => a.id - b.id);
@@ -249,12 +261,12 @@ const TransactionCard = ({  isDesktop}) => {
     return (
         <div title="" className={'custom-card'} bordered={false} style={{
             width: '100%'}}>
-            <Title style={{
+     {/*       <Title style={{
                 marginLeft: '10px',
                 marginBottom: '15px'
-            }} level={2} >Транзакции</Title>
+            }} level={2} >Транзакции</Title>*/}
             <div style={{ marginBottom: '16px',  marginLeft: '10px', }}>
-                <Space>
+                <Space  style={{ marginTop: '20px', marginBottom: '20px' }}>
                     <Button type="primary" onClick={onDeposit}>Депозит</Button>
                     <Button type="primary" onClick={onWithdraw}>Вывод</Button>
                     <Button type="primary" onClick={onNewTransaction}>Новая транзакция</Button>
@@ -263,7 +275,6 @@ const TransactionCard = ({  isDesktop}) => {
                     <DatePicker.RangePicker onChange={handleDateRangeChange} />
                 </Space>
             </div>
-
                 <Table
                     style={{
                         width: '100%'}}

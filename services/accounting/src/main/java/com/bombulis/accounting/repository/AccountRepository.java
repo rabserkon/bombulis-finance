@@ -5,14 +5,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface AccountRepository<T extends Account> extends JpaRepository<T, Long> {
-    T findAccountByIdAndUserUserIdAndDeletedFalse(Long accountId, Long userId);
-    T findAccountByIdAndUserUserId(Long accountId, Long userId);
+public interface AccountRepository extends JpaRepository<Account, Long> {
+    Optional<Account> findAccountByIdAndUserUserIdAndDeletedFalse(Long accountId, Long userId);
+    Optional<Account> findAccountByIdAndUserUserId(Long accountId, Long userId);
     CurrencyAccount findCurrencyAccountByIdAndUserUserIdAndDeletedFalse(Long accountId, Long userId);
-    List<T> findAccountsByUserUserIdAndDeletedFalse(Long userId);
-    List<T> findByUserUserIdAndDeletedFalse(Long userId);
+    List<Account> findAccountsByUserUserIdAndDeletedFalse(Long userId);
+    List<Account> findByUserUserIdAndDeletedFalse(Long userId);
     List<WithdrawalDestination> findWithdrawalDestinationsByUserUserIdAndDeletedFalse(Long userId);
     List<FinancingSource> findFinancingSourcesByUserUserIdAndDeletedFalse(Long userId);
     SecurityPositionAccount findSecurityPositionAccountByUserUserIdAndDeletedFalseAndTicker(Long userId, String ticker);

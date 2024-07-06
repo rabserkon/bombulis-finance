@@ -1,36 +1,10 @@
-"use client";
-
-
-import Card from "antd/es/card/Card";
-import Statistic from "antd/es/statistic/Statistic";
-import {Col, Divider, Flex, List, Menu, Row, Segmented} from "antd";
+import React from 'react';
+import { Flex} from "antd";
 import "./AccountList/accouting-content.css"
-import {SwapRightOutlined} from "@ant-design/icons";
 import AccountBalance from "./Balance/AccountBalance";
 import AssetsList from "./AssetsList/AssetsList";
 import AccountList from "./AccountList/AccountList";
 import TransactionCard from "./TransactionCard/TransactionCard";
-
-const items = [
-    {
-        title: 'Кэш',
-        key: 'cash',
-        price: '100$',
-        buyPrice: '145$'
-    },
-    {
-        title: 'Счета',
-        key: 'accounts',
-        price: '100$',
-        buyPrice: '145$'
-    },
-    {
-        title: 'Ценные бумаги',
-        key: 'securities',
-        price: '100$',
-        buyPrice: '145$'
-    },
-];
 
 const transactionsData = [
     {
@@ -78,8 +52,7 @@ const transactionsData = [
 ];
 
 
-function FinanceSpace({currencyList, isDesktop}){
-
+function FinanceSpace({currencyList, currenciesRates, accountTypes}){
     return(
         <Flex wrap="wrap" style={
             { padding: '12px',
@@ -90,8 +63,8 @@ function FinanceSpace({currencyList, isDesktop}){
         }>
             <AccountBalance />
             <AssetsList />
-            <AccountList currencies={currencyList}/>
-            <TransactionCard isDesktop={isDesktop} transactions={transactionsData}/>
+            <AccountList currencyList={currencyList} accountTypes={accountTypes}/>
+            <TransactionCard transactions={transactionsData}/>
         </Flex>
     )
 };

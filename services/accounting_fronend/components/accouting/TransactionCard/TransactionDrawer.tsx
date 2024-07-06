@@ -1,12 +1,13 @@
 import {Drawer, Form, Button, Select, Input, InputNumber, DatePicker} from 'antd';
 import {useEffect, useState} from 'react';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import './transaction-style.css'
 import axios from "axios";
 
 const { Option } = Select;
 
 const TransactionDrawer = ({ visible, onClose, }) => {
+    const dispatch = useDispatch();
     const [form] = Form.useForm();
     const accounts = useSelector(state => state.accounts);
     const [showExchangeFields, setShowExchangeFields] = useState(false);
@@ -30,12 +31,38 @@ const TransactionDrawer = ({ visible, onClose, }) => {
                 'Content-Type': 'application/json',
             },
         }).then(response => {
-            console.log(response.data)
+            let transaction = response.data.transaction;
+            dispatch(addTransaction(transaction));
+            const senderAccount = accounts.find(acc => acc.id === transaction.senderAccount.id);
+            const recipientAccount = accounts.find(acc => acc.id === transaction.recipientAccount.id);
+            if (senderAccount && recipientAccount ) {
+                const updatedSenderAccount = {
+                    ...senderAccount,
+                    balance: senderAccount.balance - transaction.sendAmount
+                };
+                const updatedRecipientAccount = {
+                    ...recipientAccount,
+                    balance: recipientAccount.balance + (transaction.receivedAmount != null ? transaction.receivedAmount : transaction.sendAmount)
+                };
+                dispatch(updateAccount(updatedSenderAccount))
+                dispatch(updateAccount(updatedRecipientAccount))
+                console.log(updatedRecipientAccount, updatedSenderAccount)
+            }
         }).catch(error => {
 
-            })
+        })
         onClose();
     };
+
+    const addTransaction = (transactionData) => ({
+        type: 'ADD_TRANSACTION',
+        payload: transactionData
+    });
+
+    const updateAccount = (updatedAccount) => ({
+        type: 'UPDATE_ACCOUNT',
+        payload: updatedAccount
+    });
 
     const onCloseThis = () => {
         onClose(false)

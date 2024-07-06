@@ -11,11 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "accounting_user")
+@Getter @Setter
 public class User {
 
     @Id
     @Column(name = "user_id")
-    @Getter @Setter
     private Long userId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -23,14 +23,16 @@ public class User {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "currency_code", nullable = true, referencedColumnName = "isoCode")
-    @Getter
     private Currency currency;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user")
     private List<Account> accountList;
 
     @OneToMany(mappedBy = "user")
     private List<TransactionAccount> transactionList;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Role> roles;
 
     public User(Long userId) {
         this.userId = userId;
