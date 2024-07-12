@@ -4,7 +4,7 @@ import com.bombulis.accounting.dto.RateDTO;
 import com.bombulis.accounting.entity.Currency;
 import com.bombulis.accounting.service.AccountService.exception.ServerDataAssetsException;
 import com.google.gson.JsonObject;
-import org.nasduq.api.YahooClient;
+import com.bombulis.accounting.service.NasdaqApi.YahooClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

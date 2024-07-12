@@ -1,4 +1,4 @@
-package org.nasduq.api.response;
+package com.bombulis.accounting.service.NasdaqApi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

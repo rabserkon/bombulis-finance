@@ -1,5 +1,6 @@
 package com.bombulis.accounting.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,7 +17,6 @@ import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.bombulis.accounting")
-@PropertySource("classpath:application.properties")
 @EnableAutoConfiguration
 public class ModuleConfig {
 
@@ -25,11 +25,8 @@ public class ModuleConfig {
         return new MethodValidationPostProcessor();
     }
 
-
-    public ModuleConfig(Environment environment) throws IOException {
-        String activeProfile = environment.getActiveProfiles()[0]; // Assuming a single active profile
+    public ModuleConfig(@Value("${spring.profiles.active}") String activeProfile) throws IOException {
         String propertyFileName = "application-" + activeProfile + ".properties";
-
         Resource resource = new ClassPathResource(propertyFileName);
         Properties properties = PropertiesLoaderUtils.loadProperties(resource);
     }

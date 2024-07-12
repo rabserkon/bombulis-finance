@@ -1,4 +1,4 @@
-package org.nasduq.api;
+package com.bombulis.accounting.service.NasdaqApi;
 
 
 import com.google.gson.Gson;

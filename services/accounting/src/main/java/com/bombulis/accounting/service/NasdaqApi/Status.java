@@ -1,4 +1,4 @@
-package org.nasduq.api.response;
+package com.bombulis.accounting.service.NasdaqApi;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
