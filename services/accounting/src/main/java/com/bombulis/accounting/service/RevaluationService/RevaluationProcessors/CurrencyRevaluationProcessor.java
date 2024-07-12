@@ -24,15 +24,31 @@ public class CurrencyRevaluationProcessor implements RevaluationProcessor{
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public <T extends BalanceDTO> T processRevaluationAccount(Account account, Currency revaluationCurrency, Map<String, RateDTO> currencyRates) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType {
+    public <T extends BalanceDTO> T processRevaluationBalance(Account account, Currency revaluationCurrency, Map<String, RateDTO> currencyRates) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType {
         CurrencyAccount currencyAccount = (CurrencyAccount) account;
         RateDTO rateDTO = currencyRates.get(currencyAccount.getCurrency().getIsoCode());
+        if (rateDTO == null && currencyAccount.getCurrency().equals(revaluationCurrency)){
+            rateDTO = new RateDTO(
+                    revaluationCurrency.getIsoCode(),
+                    revaluationCurrency.getIsoCode(),
+                    revaluationCurrency.getIsoCode(),
+                    1.0000
+            );
+        }
         BigDecimal revaluationBalance = (currencyAccount.getBalance()
                 .multiply(
                         new BigDecimal(currencyAccount.getCurrency()
                                 .equals(revaluationCurrency) ? 1.0000 : rateDTO.getExchangeRate()))
                 .setScale(4, RoundingMode.HALF_UP));
         return (T) new BalanceDTO(account.getId(), currencyAccount.getBalance(),  revaluationBalance, rateDTO);
+    }
+
+    @Override
+    public <T extends Account> T processRevaluationAccount(Account account, Currency revaluationCurrency, Map<String, RateDTO> currencyRates) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType {
+        CurrencyAccount currencyAccount = (CurrencyAccount) account;
+        BalanceDTO balanceDTO = this.processRevaluationBalance(currencyAccount, revaluationCurrency, currencyRates);
+        currencyAccount.setRevaluationBalance(balanceDTO);
+        return (T) currencyAccount;
     }
 
     @Override

@@ -55,6 +55,9 @@ public class UserServiceImpl implements UserService{
     public List<Role> addBaseRoles(User user) {
         List<Role> roleList = new ArrayList<>();
         roleList.add(new Role("ROLE_USER",user));
+        roleList.add(new Role("ROLE_ACCOUNTS",user));
+        roleList.add(new Role("ROLE_RATE",user));
+        roleList.add(new Role("ROLE_TRANSACTIONS", user));
         return  roleRepository.saveAll(roleList);
     }
 

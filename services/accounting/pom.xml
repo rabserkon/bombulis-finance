@@ -269,12 +269,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.nasdaq.API</groupId>
-            <artifactId>NasdaqAPI</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>${jakarta.xml.bind-api.version}</version>

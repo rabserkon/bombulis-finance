@@ -12,7 +12,8 @@ import com.bombulis.accounting.service.TransactionService.exception.CurrencyMism
 import java.util.Map;
 
 public interface RevaluationProcessor {
-    <T extends BalanceDTO> T processRevaluationAccount(Account account, Currency revaluationCurrency, Map<String, RateDTO> currencyRates) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType;
+    <T extends BalanceDTO> T processRevaluationBalance(Account account, Currency revaluationCurrency, Map<String, RateDTO> currencyRates) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType;
+    <T extends Account> T processRevaluationAccount(Account account, Currency revaluationCurrency, Map<String, RateDTO> currencyRates) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType;
     public String getType();
 
 }

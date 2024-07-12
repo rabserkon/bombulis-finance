@@ -6,24 +6,36 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - finance
+
+  redis-cache:
+    image: redis:latest
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+    networks:
+      - finance
 
   kafka-broker:
     container_name: kafka-broker
     image: wurstmeister/kafka:2.13-2.7.0
     ports:
-      - "9092:9092"
+      - "9093:9093"
     depends_on:
         - zookeeper
     environment:
-        KAFKA_BROKER_ID: 1
+        KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-broker:9092,OUTSIDE://localhost:9093
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+        KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093
+        KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
         KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-        KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-        KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+        KAFKA_BROKER_ID: 1
         KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - finance
 
   finance-db:
     image: postgres:latest

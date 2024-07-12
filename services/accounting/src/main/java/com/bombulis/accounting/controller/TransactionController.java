@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/transaction")
+@RequestMapping("/v1/transaction")
 public class TransactionController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());

@@ -4,16 +4,21 @@ import com.bombulis.accounting.component.MultiAuthToken;
 import com.bombulis.accounting.dto.CurrencyDTO;
 import com.bombulis.accounting.dto.ResponseAccountDTO;
 import com.bombulis.accounting.dto.ResponseTransaction;
+import com.bombulis.accounting.entity.Account;
 import com.bombulis.accounting.entity.AccountType;
 import com.bombulis.accounting.service.AccountService.AccountService;
 import com.bombulis.accounting.service.AccountService.AccountTypeService;
 import com.bombulis.accounting.service.AccountService.exception.AccountNonFound;
+import com.bombulis.accounting.service.AccountService.exception.AccountOtherType;
+import com.bombulis.accounting.service.AccountService.exception.AccountTypeMismatchException;
 import com.bombulis.accounting.service.AccountService.exception.ServerDataAssetsException;
 import com.bombulis.accounting.service.CurrencyService.CurrencyNonFound;
 import com.bombulis.accounting.service.CurrencyService.CurrencyService;
 import com.bombulis.accounting.service.RevaluationService.ExchangeRateService;
+import com.bombulis.accounting.service.RevaluationService.RevaluationAccountService;
 import com.bombulis.accounting.service.TransactionService.SearchCriteria;
 import com.bombulis.accounting.service.TransactionService.TransactionService;
+import com.bombulis.accounting.service.TransactionService.exception.CurrencyMismatchException;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -32,11 +37,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/service")
+@RequestMapping("/v1/service")
 public class ServiceController {
 
     @Autowired
@@ -49,6 +55,8 @@ public class ServiceController {
     private TransactionService transactionService;
     @Autowired
     private AccountTypeService accountTypeService;
+    @Autowired
+    private RevaluationAccountService revaluationAccountService;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -85,9 +93,10 @@ public class ServiceController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     private ResponseEntity<?> dashboardInformation(
             Authentication authentication
-    ) throws CurrencyNonFound, ServerDataAssetsException, AccountNonFound {
+    ) throws CurrencyNonFound, ServerDataAssetsException, AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType {
         MultiAuthToken authToken = ((MultiAuthToken) authentication);
         Map<String, Object> response = new HashMap<>();
+        List<Account> accountList = (List<Account>) accountService.findUserAccounts(authToken.getUserId());
         response.put("currencies", currencyService.getAllCurrencies().stream()
                 .map(i -> new CurrencyDTO(i)).collect(Collectors.toList()));
         response.put("currencies_rates", rateService.getExchangeRate(
@@ -95,10 +104,13 @@ public class ServiceController {
                 currencyService.getAllCurrencies(),
                 new Date()
         ));
+        /*response.put("revaluation_account", revaluationAccountService.getRevaluationAccountList(accountList,
+                "USD",
+                new Date()));*/
         response.put("transactional_list", transactionService.findAllUserTransactions(authToken.getUserId(),
                 new SearchCriteria(LocalDate.now().minusDays(LocalDate.now().getDayOfMonth()), LocalDate.now()))
                 .stream().map(i -> new ResponseTransaction(i)).collect(Collectors.toList()));
-        response.put("account_list", accountService.findUserAccounts(authToken.getUserId())
+        response.put("account_list", accountList
                 .stream().map(i -> new ResponseAccountDTO(i)).collect(Collectors.toList()));
         response.put("account_types", accountTypeService.getAllTypes().stream().map(i -> new AccountTypeDTO(i))
                 .collect(Collectors.toList()));

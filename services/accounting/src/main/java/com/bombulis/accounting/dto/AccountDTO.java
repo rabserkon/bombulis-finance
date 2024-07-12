@@ -22,6 +22,8 @@ public class AccountDTO {
     @Getter @Setter
     @ValidAccountType
     private String type;
+    @Getter @Setter
+    private String subType;
 
 
     public AccountDTO(String name, String description, String type) {

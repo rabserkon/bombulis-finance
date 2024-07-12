@@ -1,5 +1,6 @@
 package com.bombulis.accounting.entity;
 
+import com.bombulis.accounting.dto.BalanceDTO;
 import com.bombulis.accounting.model.AccountInformation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,17 +12,20 @@ import java.sql.Timestamp;
 
 @Entity
 @NoArgsConstructor
+@Getter @Setter
 public class CurrencyAccount extends Assets  {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "currency_code", nullable = false, referencedColumnName = "isoCode")
-    @Getter @Setter
     private Currency currency;
 
     @Column(name = "balance")
-    @Getter @Setter
     private BigDecimal balance;
 
+    @Transient
+    private BalanceDTO revaluationBalance;
+
+    private String subAccount;
 
     public CurrencyAccount(String name, User user) {
         super(name, user);

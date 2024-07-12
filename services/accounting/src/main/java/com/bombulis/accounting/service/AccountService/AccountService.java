@@ -16,7 +16,7 @@ import java.util.Collection;
 
 public interface AccountService {
     <T extends Account> T findAccount(Long accountId, Long userId) throws AccountNonFound, AccountTypeMismatchException;
-    <T extends Account> T createAccount(AccountDTO accountDTO, Long userId) throws CurrencyNonFound, UserException, AccountOtherType;
+    <T extends Account> T createAccount(AccountDTO accountDTO, Long userId) throws CurrencyNonFound, UserException, AccountException;
     <T extends Account> T deleteAccount(Long accountId, Long userId) throws AccountException;
     <T extends Account> Collection<T> findUserAccounts(Long userId) throws AccountNonFound;
     <T extends Account> T editAccount(AccountEditDTO accountDTO, Long userId) throws AccountNonFound;

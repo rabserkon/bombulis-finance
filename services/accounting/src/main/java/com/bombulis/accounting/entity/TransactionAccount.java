@@ -1,6 +1,7 @@
 package com.bombulis.accounting.entity;
 
 import com.bombulis.accounting.service.TransactionService.TransactionProcessors.TransactionType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -43,6 +44,7 @@ public class TransactionAccount {
     @Getter @Setter
     @ManyToOne
     @JoinColumn(name = "user_account_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     public TransactionAccount (String description, BigDecimal amount, Account senderAccount, Account recipientAccount, Date transactionDate, User user, String type) {
