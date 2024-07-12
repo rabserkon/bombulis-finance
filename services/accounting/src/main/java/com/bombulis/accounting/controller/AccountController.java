@@ -16,13 +16,11 @@ import com.bombulis.accounting.service.AccountService.exception.AccountTypeMisma
 import com.bombulis.accounting.service.CurrencyService.CurrencyNonFound;
 import com.bombulis.accounting.service.TransactionService.exception.CurrencyMismatchException;
 import com.bombulis.accounting.service.TransactionService.TransactionBalanceService;
-import com.bombulis.accounting.service.UserService.NotFoundUser;
 import com.bombulis.accounting.service.UserService.UserException;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,10 +34,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("/v1/accounts")
 public class AccountController {
 
-    private AccountService currencyAccountService;
+    private AccountService accountService;
     private TransactionBalanceService transactionService;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -49,7 +47,7 @@ public class AccountController {
     public ResponseEntity<?> createAccount(@RequestParam(name = "currency") String currency,
                                            Authentication authentication){
         Map<String, Object> response = new HashMap<>();
-        List<Account> accounts = (List<Account>) currencyAccountService.findUserAccounts( ((MultiAuthToken) authentication).getUserId());
+        List<Account> accounts = (List<Account>) accountService.findUserAccounts( ((MultiAuthToken) authentication).getUserId());
         response.put("accounts", accounts.stream().map(i -> new ResponseAccountDTO(i)).collect(Collectors.toList()));
         return ResponseEntity.ok(response);
 
@@ -57,15 +55,15 @@ public class AccountController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createAccount(@Valid @RequestBody AccountDTO accountDTO,
-                                           Authentication authentication) throws CurrencyNonFound, UserException, AccountOtherType {
-        Account account = currencyAccountService.createAccount(accountDTO, ((MultiAuthToken) authentication).getUserId());
+                                           Authentication authentication) throws CurrencyNonFound, UserException, AccountException {
+        Account account = accountService.createAccount(accountDTO, ((MultiAuthToken) authentication).getUserId());
         return ResponseEntity.ok(new ResponseAccountDTO(account));
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> editAccount(@Valid @RequestBody AccountEditDTO accountDTO,
                                          Authentication authentication) throws CurrencyNonFound, AccountNonFound {
-        Account account = currencyAccountService.editAccount(accountDTO, ((MultiAuthToken) authentication).getUserId());
+        Account account = accountService.editAccount(accountDTO, ((MultiAuthToken) authentication).getUserId());
         return ResponseEntity.ok(new ResponseAccountDTO(account));
 
     }
@@ -73,7 +71,7 @@ public class AccountController {
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAccountsInformation(Authentication authentication) throws AccountNonFound {
         Map<String, Object> response = new HashMap<>();
-        List<Account> accounts = (List<Account>) currencyAccountService.findUserAccounts( ((MultiAuthToken) authentication).getUserId());
+        List<Account> accounts = (List<Account>) accountService.findUserAccounts( ((MultiAuthToken) authentication).getUserId());
         response.put("accounts", accounts.stream().map(account -> new ResponseAccountDTO(account))
                 .collect(Collectors.toList()));
         return ResponseEntity.ok(response);
@@ -84,7 +82,7 @@ public class AccountController {
     public ResponseEntity<?> getAccountInformation(@RequestParam(name = "accountId") Long accountId,
                                                    Authentication authentication) throws AccountTypeMismatchException, AccountNonFound {
         Map<String, Object> response = new HashMap<>();
-        CurrencyAccount account = currencyAccountService
+        Account account = accountService
                 .findAccount(accountId, ((MultiAuthToken) authentication)
                         .getUserId());
         response.put("account", new ResponseAccountDTO(account));
@@ -107,7 +105,7 @@ public class AccountController {
     public ResponseEntity<?> accountDelete(@RequestParam(name = "accountId") Long accountId,
                                                    Authentication authentication) throws AccountException {
         Map<String, Object> response = new HashMap<>();
-        CurrencyAccount account = currencyAccountService.deleteAccount(accountId, ((MultiAuthToken) authentication).getUserId());
+        Account account = accountService.deleteAccount(accountId, ((MultiAuthToken) authentication).getUserId());
         response.put("delete", true);
         response.put("account", new ResponseAccountDTO(account));
         return ResponseEntity.ok(response);
@@ -151,7 +149,7 @@ public class AccountController {
 
     @Autowired
     public void setAccountService(AccountService accountService) {
-        this.currencyAccountService = accountService;
+        this.accountService = accountService;
     }
 
 

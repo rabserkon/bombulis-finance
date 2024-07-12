@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 public interface ExchangeRateService {
-    Map<String, RateDTO> getExchangeRate(Currency mainCurrency, Collection<Currency> currencyCollection, Date date) throws ServerDataAssetsException;
+    Map<String, RateDTO> getExchangeRate(Currency mainCurrency, Collection<Currency> currencyCollection, Date date) throws ServerDataAssetsException, CurrencyRateException;
     Map<String, RateDTO> getExchangeRate(Currency mainCurrency, Set<String> currencyCollection, Date date) throws ServerDataAssetsException;
     Map<String, RateDTO> getExchangeRate(List<Currency> mainCurrency, List<Currency> currencyCollection, Date date) throws ServerDataAssetsException;
 }

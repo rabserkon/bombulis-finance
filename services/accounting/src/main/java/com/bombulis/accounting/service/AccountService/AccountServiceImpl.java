@@ -23,6 +23,10 @@ import com.bombulis.accounting.service.UserService.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,56 +43,64 @@ public class AccountServiceImpl implements AccountService, AccountTypeService{
     private UserService userService;
     private AccountProcessorsFactory accountProcessorsFactory;
     private AccountTypeRepository accountTypeRepository;
+    private RedisTemplate<String, Object> redisTemplate;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     @Transactional(readOnly = true)
-    public <T extends Account> T findAccount(Long accountId, Long userId) throws AccountNonFound, AccountTypeMismatchException {
+    @Cacheable(value = "accounts", key = "#accountId")
+    public Account findAccount(Long accountId, Long userId) throws AccountNonFound, AccountTypeMismatchException {
         Account account = accountRepository.findAccountByIdAndUserUserIdAndDeletedFalse(accountId, userId)
                 .orElseThrow(() -> new AccountNonFound("Account non found"));
-        return (T) account;
+        return account;
     }
 
     @Override
     @Transactional(isolation = Isolation.DEFAULT)
-    public <T extends Account> T createAccount(AccountDTO accountDTO, Long userId) throws CurrencyNonFound, UserException, AccountOtherType {
+    @CachePut(value = "accounts", key = "#result.id")
+    public Account createAccount(AccountDTO accountDTO, Long userId) throws CurrencyNonFound, UserException, AccountException {
         final User user = userService.findUserById(userId);
         AccountProcessor accountProcessor = accountProcessorsFactory.getProcessor(accountDTO.getType());
-        T account = accountProcessor.processCreateAccount(accountDTO, user);
+        Account account = accountProcessor.processCreateAccount(accountDTO, user);
         return account;
     }
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public <T extends Account> T deleteAccount(Long accountId, Long userId) throws AccountException {
+    @CacheEvict(value = "accounts", key = "#accountId")
+    public Account deleteAccount(Long accountId, Long userId) throws AccountException {
         Account account = accountRepository.findAccountByIdAndUserUserIdAndDeletedFalse(accountId, userId)
                 .orElseThrow(() -> new AccountNonFound("Account not found"));
         account.setDeleted(true);
-        return (T) accountRepository.save(account);
+        return accountRepository.save(account);
     }
 
     @Override
-    public <T extends Account> Collection<T> findUserAccounts(Long userId) throws AccountNonFound {
+    public Collection<Account> findUserAccounts(Long userId) throws AccountNonFound {
         List<? extends Account> accountsList = accountRepository.findByUserUserIdAndDeletedFalse(userId);
         accountsList = accountsList.stream()
                 .filter(account -> !(account instanceof FinancingSource) && !(account instanceof WithdrawalDestination))
                 .collect(Collectors.toList());
-        return (Collection<T>) accountsList;
+        for (Account account : accountsList) {
+            redisTemplate.opsForValue().set("accounts::" + account.getId(), account);
+        }
+        return (Collection<Account>) accountsList;
     }
 
     @Override
-    public <T extends Account> T editAccount(AccountEditDTO accountDTO, Long userId) throws AccountNonFound{
+    @CachePut(value = "accounts", key = "#result.id")
+    public Account editAccount(AccountEditDTO accountDTO, Long userId) throws AccountNonFound{
         Account account =  accountRepository.findAccountByIdAndUserUserId(accountDTO.getId(), userId)
                     .orElseThrow(() -> new AccountNonFound("Account not found"));
         account.setDescription(accountDTO.getDescription());
         account.setName(accountDTO.getName());
         account.setArchive(accountDTO.isArchive());
-        return (T) accountRepository.save(account);
+        return  accountRepository.save(account);
     }
 
     @Override
-    public <T extends Account> T setBalance(Long accountId, Long userId, BalanceDTO balanceDTO) throws AccountNonFound {
+    public Account setBalance(Long accountId, Long userId, BalanceDTO balanceDTO) throws AccountNonFound {
         return null;
     }
 
@@ -115,5 +127,10 @@ public class AccountServiceImpl implements AccountService, AccountTypeService{
     @Autowired
     public void setAccountTypeRepository(AccountTypeRepository accountTypeRepository) {
         this.accountTypeRepository = accountTypeRepository;
+    }
+
+    @Autowired
+    public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
     }
 }

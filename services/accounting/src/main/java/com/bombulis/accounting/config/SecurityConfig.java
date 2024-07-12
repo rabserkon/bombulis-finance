@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 @PropertySource("classpath:application-${spring.profiles.active}.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -34,7 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/create/token").permitAll()
+                .antMatchers("/v1/auth/**").not().authenticated()
+                .antMatchers("/v1/service/**").hasRole("USER")
+                .antMatchers("/v1/revaluations/**").hasRole("USER")
+                .antMatchers("/v1/accounts/**").hasRole("ACCOUNTS")
+                .antMatchers("/v1/sources/**").hasRole("ACCOUNTS")
+                .antMatchers("/v1/transaction/**").hasRole("TRANSACTIONS")
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated();
     }

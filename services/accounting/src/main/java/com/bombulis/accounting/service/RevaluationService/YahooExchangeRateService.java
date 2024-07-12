@@ -19,7 +19,7 @@ public class YahooExchangeRateService implements ExchangeRateService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public Map<String, RateDTO>  getExchangeRate(Currency mainCurrency, Collection<Currency> currencyCollection, Date date) throws ServerDataAssetsException {
+    public Map<String, RateDTO>  getExchangeRate(Currency mainCurrency, Collection<Currency> currencyCollection, Date date) throws CurrencyRateException {
         YahooClient yahooClient = new YahooClient();
         List<String> rates = currencyCollection.stream().map(i -> {
             return i.getIsoCode() + mainCurrency.getIsoCode() +"=X";
@@ -44,8 +44,8 @@ public class YahooExchangeRateService implements ExchangeRateService {
                         }
                 ));
             return convertedMap;
-        } catch (IOException e) {
-            return new HashMap<>();
+        } catch (IOException e) {;
+            throw new CurrencyRateException("Ошибка загрузки курсов");
         }
     }
 

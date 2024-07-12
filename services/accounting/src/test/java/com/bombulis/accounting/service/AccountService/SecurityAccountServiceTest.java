@@ -7,6 +7,7 @@ import com.bombulis.accounting.entity.User;
 
 import com.bombulis.accounting.dto.SecurityAccountDTO;
 import com.bombulis.accounting.repository.CurrencyRepository;
+import com.bombulis.accounting.service.AccountService.exception.AccountException;
 import com.bombulis.accounting.service.AccountService.exception.AccountOtherType;
 import com.bombulis.accounting.service.CurrencyService.CurrencyNonFound;
 import com.bombulis.accounting.service.UserService.NotFoundUser;
@@ -42,7 +43,7 @@ public class SecurityAccountServiceTest {
     }
 
     @Test
-    public void testCreateAccount() throws CurrencyNonFound, IOException, UserException, AccountOtherType {
+    public void testCreateAccount() throws CurrencyNonFound, IOException, UserException, AccountException {
         // Arrange
         Long userId = 1L;
         String ticker = "AAPL";
@@ -57,7 +58,7 @@ public class SecurityAccountServiceTest {
         when(currencyRepository.findCurrencyByIsoCode("USD")).thenReturn(Optional.of(currency));
 
         // Act
-        SecurityPositionAccount result = accountService.createAccount(securityAccountDTO, userId);
+        SecurityPositionAccount result = (SecurityPositionAccount) accountService.createAccount(securityAccountDTO, userId);
 
         // Assert
         //assertNotNull(result);

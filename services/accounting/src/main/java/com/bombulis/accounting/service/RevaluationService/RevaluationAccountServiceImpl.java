@@ -8,6 +8,7 @@ import com.bombulis.accounting.service.AccountService.exception.AccountNonFound;
 import com.bombulis.accounting.service.AccountService.exception.AccountOtherType;
 import com.bombulis.accounting.service.AccountService.exception.AccountTypeMismatchException;
 import com.bombulis.accounting.service.AccountService.exception.ServerDataAssetsException;
+import com.bombulis.accounting.service.CurrencyService.CurrencyNonFound;
 import com.bombulis.accounting.service.CurrencyService.CurrencyService;
 import com.bombulis.accounting.service.RevaluationService.RevaluationProcessors.RevaluationProcessor;
 import com.bombulis.accounting.service.RevaluationService.RevaluationProcessors.RevaluationProcessorFactory;
@@ -29,14 +30,28 @@ public class RevaluationAccountServiceImpl implements RevaluationAccountService{
 
 
     @Override
-    public <T extends BalanceDTO> List<T> getRevaluationAccountList(List<Account> accountList, Currency revaluationCurrency, Date date) throws AccountOtherType, CurrencyMismatchException, AccountTypeMismatchException, AccountNonFound, ServerDataAssetsException {
+    public <T extends BalanceDTO> List<T> getRevaluationBalanceAccountList(List<Account> accountList, Currency revaluationCurrency, Date date) throws AccountOtherType, CurrencyMismatchException, AccountTypeMismatchException, AccountNonFound, ServerDataAssetsException, CurrencyRateException {
         List<T> balanceList = new ArrayList<>();
         Map<String, RateDTO> cryptocurrencyRates = exchangeRateService.getExchangeRate(revaluationCurrency, currencyService.getAllCurrencies(), date);
         Map<String, RateDTO> currencyRates = exchangeRateService.getExchangeRate(revaluationCurrency, currencyService.getAllCurrencies(), date);
         for (Account account : accountList){
             RevaluationProcessor processor = revaluationProcessorFactory.getProcessor(account.getType());
-            T balanceDTO = processor.processRevaluationAccount(account,revaluationCurrency,currencyRates);
+            T balanceDTO = processor.processRevaluationBalance(account,revaluationCurrency,currencyRates);
             balanceList.add(balanceDTO);
+        }
+        return balanceList;
+    }
+
+    @Override
+    public List<Account> getRevaluationAccountList(List<Account> accountList, String currencyISO, Date date) throws AccountOtherType, CurrencyMismatchException, AccountTypeMismatchException, AccountNonFound, ServerDataAssetsException, CurrencyNonFound, CurrencyRateException {
+        List<Account> balanceList = new ArrayList<>();
+        Currency revaluationCurrency = currencyService.findCurrency(currencyISO);
+        Map<String, RateDTO> cryptocurrencyRates = exchangeRateService.getExchangeRate(revaluationCurrency, currencyService.getAllCurrencies(), date);
+        Map<String, RateDTO> currencyRates = exchangeRateService.getExchangeRate(revaluationCurrency, currencyService.getAllCurrencies(), date);
+        for (Account account : accountList){
+            RevaluationProcessor processor = revaluationProcessorFactory.getProcessor(account.getType());
+            Account revaluationAccount = processor.processRevaluationAccount(account,revaluationCurrency,currencyRates);
+            balanceList.add(revaluationAccount);
         }
         return balanceList;
     }

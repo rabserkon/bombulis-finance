@@ -1,6 +1,8 @@
 package com.bombulis.accounting.entity;
 
+import com.bombulis.accounting.dto.BalanceDTO;
 import com.bombulis.accounting.model.AccountInformation;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,9 +37,10 @@ public class Account {
     @Getter @Setter
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", updatable=false, nullable = false)
     @Setter @Getter
+    @JsonBackReference
     private User user;
 
     public Account(String name, User user) {

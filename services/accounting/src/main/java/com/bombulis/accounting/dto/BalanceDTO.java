@@ -1,5 +1,6 @@
 package com.bombulis.accounting.dto;
 
+import com.bombulis.accounting.entity.Balance;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,4 +24,5 @@ public class BalanceDTO {
         this.accountId = accountId;
         this.balance = balance;
     }
+
 }

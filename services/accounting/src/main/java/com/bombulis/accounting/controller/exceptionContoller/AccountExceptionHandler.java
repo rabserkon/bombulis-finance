@@ -4,6 +4,7 @@ package com.bombulis.accounting.controller.exceptionContoller;
 import com.bombulis.accounting.service.AccountService.exception.AccountException;
 import com.bombulis.accounting.service.AccountService.exception.ServerDataAssetsException;
 import com.bombulis.accounting.service.CurrencyService.CurrencyException;
+import com.bombulis.accounting.service.RevaluationService.CurrencyRateException;
 import com.bombulis.accounting.service.UserService.UserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,13 @@ public class AccountExceptionHandler {
 
     @ExceptionHandler(ServerDataAssetsException.class)
     public ResponseEntity<Map<String, String>> handleServerDataAssetsException(ServerDataAssetsException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", "The server providing financial information is not responding");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler(CurrencyRateException.class)
+    public ResponseEntity<Map<String, String>> handleCurrencyRateException(CurrencyRateException ex) {
         Map<String, String> errors = new HashMap<>();
         errors.put("error", "The server providing financial information is not responding");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);

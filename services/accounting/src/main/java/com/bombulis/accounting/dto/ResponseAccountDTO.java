@@ -26,6 +26,8 @@ public class ResponseAccountDTO {
     private Long userId;
     private CurrencyDTO currency;
     private BigDecimal balance;
+    private BalanceDTO revaluationBalance;
+    private String subType;
 
     public ResponseAccountDTO(Account account) {
         this.id = account.getId();
@@ -35,11 +37,13 @@ public class ResponseAccountDTO {
         this.archive = account.isArchive();
         this.type = account.getType();
         this.description = account.getDescription();
-        this.userId = account.getUser().getUserId();
+        //this.userId = account.getUser().getUserId();
         if (account instanceof CurrencyAccount){
             CurrencyAccount currencyAccount = ((CurrencyAccount) account);
             this.currency = new CurrencyDTO(currencyAccount.getCurrency());
             this.balance = currencyAccount.getBalance();
+            this.revaluationBalance = currencyAccount.getRevaluationBalance();
+            this.subType = currencyAccount.getSubAccount();
         }
 
 

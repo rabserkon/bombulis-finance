@@ -4,11 +4,13 @@ import com.bombulis.accounting.dto.CurrencyDTO;
 import com.bombulis.accounting.service.AccountService.exception.ServerDataAssetsException;
 import com.bombulis.accounting.service.CurrencyService.CurrencyNonFound;
 import com.bombulis.accounting.service.CurrencyService.CurrencyService;
+import com.bombulis.accounting.service.RevaluationService.CurrencyRateException;
 import com.bombulis.accounting.service.RevaluationService.ExchangeRateService;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,12 +25,13 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping("/currencies")
+@RequestMapping("/v1/currencies")
 public class CurrencyController {
 
     private CurrencyService currencyService;
     private ExchangeRateService rateService;
 
+    @Secured("ROLE_USER")
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getCurrencies(){
         Map<String, Object> response = new HashMap<>();
@@ -37,9 +40,10 @@ public class CurrencyController {
         return ResponseEntity.ok(response);
     }
 
+    @Secured("ROLE_RATE")
     @RequestMapping(value = "/rates", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getCurrenciesRates(@RequestParam(name = "currency") String currency,
-                                                Authentication authentication) throws CurrencyNonFound, ServerDataAssetsException {
+                                                Authentication authentication) throws CurrencyNonFound, ServerDataAssetsException, CurrencyRateException {
         Map<String, Object> response = new HashMap<>();
         response.put("currencies", rateService.getExchangeRate(
                 currencyService.findCurrency(currency),
@@ -49,6 +53,7 @@ public class CurrencyController {
         return ResponseEntity.ok(response);
     }
 
+    @Secured("ROLE_RATE")
     @RequestMapping(value = "/full/rates", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getFullCurrenciesRates(Authentication authentication) throws CurrencyNonFound, ServerDataAssetsException, IOException {
         Map<String, Object> response = new HashMap<>();
