@@ -25,7 +25,6 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        System.out.println(kafkaHost);
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaHost);
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "email-send-group-id");
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
