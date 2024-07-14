@@ -30,4 +30,6 @@ jobs:
           context: ./services/accounting
           dockerfile: ./services/accounting/Dockerfile
           push: true
-          tags: rabserkon/finance:latest
+          tags: |
+            rabserkon/finance:latest
+            rabserkon/finance:${{ github.sha }}

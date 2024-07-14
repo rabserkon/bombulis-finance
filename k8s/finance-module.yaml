@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-module
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: finance-module
+  template:
+    metadata:
+      labels:
+        app: finance-module
+    spec:
+      containers:
+        - name: finance-module
+          imagePullPolicy: Always
+          image: rabserkon/finance:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: finance-config
+                  key: DB_USER
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: finance-config
+                  key: DB_URL
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: finance-config
+                  key: DB_NAME
+            - name: DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: finance-config
+                  key: DB_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: finance-config
+                  key: JWT_SECRET
+            - name: JWT_EXPIRATION
+              valueFrom:
+                configMapKeyRef:
+                  name: finance-config
+                  key: JWT_EXPIRATION
+            - name: BROKER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: finance-config
+                  key: BROKER_HOST
+            - name: CACHE_REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: finance-config
+                  key: CACHE_REDIS_HOST
+            - name: CACHE_REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: finance-config
+                  key: CACHE_REDIS_PORT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: finance-module
+spec:
+  type: LoadBalancer
+  selector:
+    app: finance-module
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30001

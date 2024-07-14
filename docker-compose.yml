@@ -55,7 +55,7 @@ services:
       context: ./services/accounting
       dockerfile: Dockerfile
     ports:
-      - "8087:8080"
+      - "8080:8080"
     depends_on:
       - finance-db
     environment:
