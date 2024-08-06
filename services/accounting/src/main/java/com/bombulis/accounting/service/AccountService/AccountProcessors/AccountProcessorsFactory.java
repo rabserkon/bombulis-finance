@@ -22,7 +22,7 @@ public class AccountProcessorsFactory {
     public AccountProcessor getProcessor(String type) throws AccountOtherType {
         AccountProcessor processor = accountProcessors.get(type);
         if (processor == null) {
-            throw new AccountOtherType("Unknown transaction type: " + type);
+            throw new AccountOtherType("Unknown account type: " + type);
         }
         return processor;
     }

@@ -8,6 +8,7 @@ import com.bombulis.accounting.entity.Account;
 import com.bombulis.accounting.entity.AccountType;
 import com.bombulis.accounting.service.AccountService.AccountService;
 import com.bombulis.accounting.service.AccountService.AccountTypeService;
+import com.bombulis.accounting.service.AccountService.FinancingSourceService;
 import com.bombulis.accounting.service.AccountService.exception.AccountNonFound;
 import com.bombulis.accounting.service.AccountService.exception.AccountOtherType;
 import com.bombulis.accounting.service.AccountService.exception.AccountTypeMismatchException;
@@ -19,6 +20,7 @@ import com.bombulis.accounting.service.RevaluationService.RevaluationAccountServ
 import com.bombulis.accounting.service.TransactionService.SearchCriteria;
 import com.bombulis.accounting.service.TransactionService.TransactionService;
 import com.bombulis.accounting.service.TransactionService.exception.CurrencyMismatchException;
+import com.bombulis.accounting.service.UserService.NotFoundUser;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -57,6 +59,8 @@ public class ServiceController {
     private AccountTypeService accountTypeService;
     @Autowired
     private RevaluationAccountService revaluationAccountService;
+    @Autowired
+    private FinancingSourceService sourcesService;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -93,7 +97,7 @@ public class ServiceController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     private ResponseEntity<?> dashboardInformation(
             Authentication authentication
-    ) throws CurrencyNonFound, ServerDataAssetsException, AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType {
+    ) throws CurrencyNonFound, ServerDataAssetsException, AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType, NotFoundUser {
         MultiAuthToken authToken = ((MultiAuthToken) authentication);
         Map<String, Object> response = new HashMap<>();
         List<Account> accountList = (List<Account>) accountService.findUserAccounts(authToken.getUserId());
@@ -113,6 +117,12 @@ public class ServiceController {
         response.put("account_list", accountList
                 .stream().map(i -> new ResponseAccountDTO(i)).collect(Collectors.toList()));
         response.put("account_types", accountTypeService.getAllTypes().stream().map(i -> new AccountTypeDTO(i))
+                .collect(Collectors.toList()));
+        response.put("source_list",sourcesService.getListDepositAccount(authToken.getUserId())
+                .stream().map(i -> new ResponseAccountDTO(i))
+                .collect(Collectors.toList()));
+        response.put("withdrawal_list", sourcesService.getListWithdrawalAccount(authToken.getUserId())
+                .stream().map(i -> new ResponseAccountDTO(i))
                 .collect(Collectors.toList()));
         return ResponseEntity.ok().body(response);
     }

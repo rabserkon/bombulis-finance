@@ -49,16 +49,16 @@ public class AccountServiceImpl implements AccountService, AccountTypeService{
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "accounts", key = "#accountId")
-    public Account findAccount(Long accountId, Long userId) throws AccountNonFound, AccountTypeMismatchException {
+    /*@Cacheable(value = "accounts", key = "#accountId")*/
+    public <T extends Account> T findAccount(Long accountId, Long userId) throws AccountNonFound, AccountTypeMismatchException {
         Account account = accountRepository.findAccountByIdAndUserUserIdAndDeletedFalse(accountId, userId)
                 .orElseThrow(() -> new AccountNonFound("Account non found"));
-        return account;
+        return (T) account;
     }
 
     @Override
     @Transactional(isolation = Isolation.DEFAULT)
-    @CachePut(value = "accounts", key = "#result.id")
+   /* @CachePut(value = "accounts", key = "#result.id")*/
     public Account createAccount(AccountDTO accountDTO, Long userId) throws CurrencyNonFound, UserException, AccountException {
         final User user = userService.findUserById(userId);
         AccountProcessor accountProcessor = accountProcessorsFactory.getProcessor(accountDTO.getType());
@@ -68,7 +68,7 @@ public class AccountServiceImpl implements AccountService, AccountTypeService{
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    @CacheEvict(value = "accounts", key = "#accountId")
+   /* @CacheEvict(value = "accounts", key = "#accountId")*/
     public Account deleteAccount(Long accountId, Long userId) throws AccountException {
         Account account = accountRepository.findAccountByIdAndUserUserIdAndDeletedFalse(accountId, userId)
                 .orElseThrow(() -> new AccountNonFound("Account not found"));
@@ -89,7 +89,7 @@ public class AccountServiceImpl implements AccountService, AccountTypeService{
     }
 
     @Override
-    @CachePut(value = "accounts", key = "#result.id")
+   /* @CachePut(value = "accounts", key = "#result.id")*/
     public Account editAccount(AccountEditDTO accountDTO, Long userId) throws AccountNonFound{
         Account account =  accountRepository.findAccountByIdAndUserUserId(accountDTO.getId(), userId)
                     .orElseThrow(() -> new AccountNonFound("Account not found"));

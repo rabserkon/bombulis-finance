@@ -56,4 +56,6 @@ public class TransactionAccount {
         this.type = type;
         this.user = user;
     }
+
+
 }

@@ -9,9 +9,9 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
-@AllArgsConstructor
 @NoArgsConstructor
-public class AccountDTO {
+@AllArgsConstructor
+public class SourceDTO {
     @NotNull
     @Getter @Setter
     private String name;
@@ -22,26 +22,17 @@ public class AccountDTO {
     @Getter @Setter
     @ValidAccountType
     private String type;
-    @Getter @Setter
-    private String subType;
 
 
-    public AccountDTO(String name, String description, String type) {
+    public SourceDTO(String name, String description, String type) {
         this.name = name;
         this.description = description;
         this.type = type;
     }
 
-    public AccountDTO(Account account) {
+    public SourceDTO(Account account) {
         this.name = account.getName();
         this.description = account.getDescription();
         this.type = account.getType();
-    }
-
-    public AccountDTO(SourceDTO account) {
-        this.name = account.getName();
-        this.description = account.getDescription();
-        this.type = account.getType();
-        this.currency = account.getCurrency();
     }
 }
