@@ -71,6 +71,22 @@ services:
     networks:
       - finance
 
+  reports-db:
+    image: mongo:latest
+    container_name: reports-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: reports-db
+
+
+
 networks:
   finance:
     driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
