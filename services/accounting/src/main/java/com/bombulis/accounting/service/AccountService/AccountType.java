@@ -8,7 +8,9 @@ public enum AccountType {
     SECURITIES("Securities"),
     METALS("Metals"),
     CRYPTOCURRENCY("Cryptocurrency"),
-    INVESTMENT("Investment");
+    INVESTMENT("Investment"),
+    DEPOSIT("Deposit"),
+    WITHDRAWAL("Withdrawal");
 
     @Getter
     private final String type;

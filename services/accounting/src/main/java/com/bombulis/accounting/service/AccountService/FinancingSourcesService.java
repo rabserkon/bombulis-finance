@@ -14,43 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DepositWithdrawalService implements FinancingSourceService {
+public class FinancingSourcesService implements FinancingSourceService {
 
     private CurrencyRepository currencyRepository;
     private AccountRepository accountRepository;
     private UserService userService;
 
     @Override
-    public FinancingSource createFinancingSource(String name, String currencyCode, Long userId) throws UserException, CurrencyNonFound {
-        User user = userService.findUserById(userId);
-        Currency currency = this.findCurrency(currencyCode);
-        Account account = new FinancingSource(name, currency, user);
-        return (FinancingSource) accountRepository.save(account);
-    }
-
-    @Override
-    public WithdrawalDestination createWithdrawalAccount(String name, String currencyCode, Long userId) throws UserException, CurrencyNonFound {
-        User user = userService.findUserById(userId);
-        Currency currency = this.findCurrency(currencyCode);
-        Account account = new WithdrawalDestination(name, currency, user);
-        return (WithdrawalDestination) accountRepository.save(account);
-    }
-
-    @Override
     public List<? extends Account> getListDepositAccount(Long userId) throws NotFoundUser, CurrencyNonFound {
         List<FinancingSource> accountList = accountRepository.findFinancingSourcesByUserUserIdAndDeletedFalse(userId);
-        if (accountList ==  null){
-            return new ArrayList<>();
-        }
         return accountList;
     }
 
     @Override
     public List<? extends Account> getListWithdrawalAccount(Long userId) throws NotFoundUser, CurrencyNonFound {
         List<WithdrawalDestination> accountList = accountRepository.findWithdrawalDestinationsByUserUserIdAndDeletedFalse(userId);
-        if (accountList ==  null){
-            return new ArrayList<>();
-        }
         return accountList;
     }
 

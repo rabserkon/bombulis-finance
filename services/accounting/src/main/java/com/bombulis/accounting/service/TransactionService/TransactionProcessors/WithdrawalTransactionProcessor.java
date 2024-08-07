@@ -2,10 +2,7 @@ package com.bombulis.accounting.service.TransactionService.TransactionProcessors
 
 import com.bombulis.accounting.dto.BalanceDTO;
 import com.bombulis.accounting.dto.TransactionDTO;
-import com.bombulis.accounting.entity.CurrencyAccount;
-import com.bombulis.accounting.entity.TransactionAccount;
-import com.bombulis.accounting.entity.User;
-import com.bombulis.accounting.entity.WithdrawalDestination;
+import com.bombulis.accounting.entity.*;
 import com.bombulis.accounting.repository.TransactionRepository;
 import com.bombulis.accounting.repository.UserRepository;
 import com.bombulis.accounting.service.AccountService.exception.AccountNonFound;
@@ -15,6 +12,8 @@ import com.bombulis.accounting.service.TransactionService.exception.CurrencyMism
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class WithdrawalTransactionProcessor implements TransactionProcessor{
@@ -24,6 +23,7 @@ public class WithdrawalTransactionProcessor implements TransactionProcessor{
     private UserRepository userRepository;
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public TransactionAccount processCreateTransaction(TransactionDTO transactionDTO, User user) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException {
         CurrencyAccount senderAccount = accountService.findAccount(transactionDTO.getSenderAccountId(), user.getUserId());
         WithdrawalDestination withdrawalAccount = accountService.findAccount(transactionDTO.getReceivedAccountId(), user.getUserId());
@@ -36,16 +36,18 @@ public class WithdrawalTransactionProcessor implements TransactionProcessor{
         if (!((CurrencyAccount) senderAccount ).getCurrency().equals(withdrawalAccount.getCurrency())){
             throw new CurrencyMismatchException("Cannot transfer between accounts with different currencies.");
         }
-        TransactionAccount transactionAccount = new TransactionAccount(transactionDTO.getDescription(),
+        TransactionAccount transactionAccount =  new TransactionCurrencyExchange(
+                transactionDTO.getDescription(),
                 transactionDTO.getSendAmount(),
+                (transactionDTO.getReceivedAmount() != null ? transactionDTO.getReceivedAmount() : transactionDTO.getSendAmount()),
+                transactionDTO.getExchangeRate() != null ? transactionDTO.getExchangeRate()  : transactionDTO.getSendAmount(),
                 senderAccount,
                 withdrawalAccount,
                 transactionDTO.getTransactionDate(),
                 user,
                 TransactionType.WITHDRAWAL.name());
-
         senderAccount.setBalance(senderAccount.getBalance().subtract(transactionDTO.getSendAmount()));
-        withdrawalAccount.setBalance(withdrawalAccount.getBalance().add(transactionDTO.getReceivedAmount()));
+        withdrawalAccount.setBalance(withdrawalAccount.getBalance().add(transactionDTO.getReceivedAmount() != null ? transactionDTO.getReceivedAmount() : transactionDTO.getSendAmount()));
         return transactionRepository.save(transactionAccount);
     }
 

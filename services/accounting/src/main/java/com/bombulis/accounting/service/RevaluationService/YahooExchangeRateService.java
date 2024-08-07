@@ -19,7 +19,7 @@ public class YahooExchangeRateService implements ExchangeRateService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public Map<String, RateDTO>  getExchangeRate(Currency mainCurrency, Collection<Currency> currencyCollection, Date date) throws CurrencyRateException {
+    public Map<String, RateDTO>  getExchangeRate(Currency mainCurrency, Collection<Currency> currencyCollection, Date date) throws CurrencyRateException, ServerDataAssetsException {
         YahooClient yahooClient = new YahooClient();
         List<String> rates = currencyCollection.stream().map(i -> {
             return i.getIsoCode() + mainCurrency.getIsoCode() +"=X";

@@ -12,6 +12,8 @@ import com.bombulis.accounting.service.TransactionService.exception.CurrencyMism
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DepositTransactionProcessor implements TransactionProcessor{
@@ -21,6 +23,7 @@ public class DepositTransactionProcessor implements TransactionProcessor{
     private UserRepository userRepository;
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public TransactionAccount processCreateTransaction(TransactionDTO transactionDTO, User user) throws AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException {
         FinancingSource depositAccount = accountService.findAccount(transactionDTO.getSenderAccountId(), user.getUserId());
         CurrencyAccount receivedCurrencyAccount = accountService.findAccount(transactionDTO.getReceivedAccountId(), user.getUserId());
@@ -33,8 +36,11 @@ public class DepositTransactionProcessor implements TransactionProcessor{
         if (!((FinancingSource) depositAccount ).getCurrency().equals(receivedCurrencyAccount.getCurrency())){
             throw new CurrencyMismatchException("Cannot transfer between accounts with different currencies.");
         }
-        TransactionAccount transactionAccount = new TransactionAccount(transactionDTO.getDescription(),
-                transactionDTO.getReceivedAmount(),
+        TransactionAccount transactionAccount = new TransactionCurrencyExchange(
+                transactionDTO.getDescription(),
+                transactionDTO.getSendAmount(),
+                (transactionDTO.getReceivedAmount() != null ? transactionDTO.getReceivedAmount() : transactionDTO.getSendAmount()),
+                transactionDTO.getExchangeRate() != null ? transactionDTO.getExchangeRate()  : transactionDTO.getSendAmount(),
                 depositAccount,
                 receivedCurrencyAccount,
                 transactionDTO.getTransactionDate(),
@@ -42,9 +48,8 @@ public class DepositTransactionProcessor implements TransactionProcessor{
                 TransactionType.DEPOSIT.name());
 
         depositAccount.setBalance(depositAccount.getBalance().add(transactionDTO.getSendAmount()));
-        receivedCurrencyAccount.setBalance(receivedCurrencyAccount.getBalance().add(transactionDTO.getReceivedAmount()));
-
-        return transactionAccount;
+        receivedCurrencyAccount.setBalance(receivedCurrencyAccount.getBalance().add(transactionDTO.getReceivedAmount() != null ? transactionDTO.getReceivedAmount() : transactionDTO.getSendAmount()));
+        return transactionRepository.save(transactionAccount);
     }
 
     @Override
