@@ -44,7 +44,6 @@ public class ReportServiceIntegrationTest {
 
         logger.info(accountReport.toString());
 
-
-
+        reportService.sendAccountReport(accountReport);
     }
 }

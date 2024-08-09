@@ -62,7 +62,7 @@ public class ReportService {
         return accountReport;
     }
 
-    private void sendAccountReport(AccountReport accountReport){
+    public void sendAccountReport(AccountReport accountReport){
         kafkaTemplate.send(TOPIC, accountReport);
     }
 }
