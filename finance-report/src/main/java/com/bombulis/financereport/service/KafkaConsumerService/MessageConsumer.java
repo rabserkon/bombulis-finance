@@ -3,6 +3,7 @@ package com.bombulis.financereport.service.KafkaConsumerService;
 import com.bombulis.financereport.dto.AccountReport;
 import com.bombulis.financereport.service.ExcelReportService.ExcelReportService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class MessageConsumer {
         try {
             if (message.contains("statementId")) {
                 ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new JavaTimeModule());
                 AccountReport report = objectMapper.readValue(message, AccountReport.class);
                 processAccountReport(report);
             } else {
