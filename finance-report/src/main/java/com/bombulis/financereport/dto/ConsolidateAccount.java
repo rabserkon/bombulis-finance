@@ -10,10 +10,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Data
 public class ConsolidateAccount {
     private Long accountId;
     private BigDecimal totalReceiveAmount;
     private BigDecimal totalSendAmount;
-    private LocalDateTime balanceBeforeStartPeriod;
-    private LocalDateTime balanceAfterEndPeriod;
+    private BigDecimal balanceBeforeStartPeriod;
+    private BigDecimal balanceAfterEndPeriod;
 }

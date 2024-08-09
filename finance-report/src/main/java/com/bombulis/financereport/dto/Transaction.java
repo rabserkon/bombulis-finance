@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Data
 public class Transaction {
     private Long id;
     private Long senderAccountId;
