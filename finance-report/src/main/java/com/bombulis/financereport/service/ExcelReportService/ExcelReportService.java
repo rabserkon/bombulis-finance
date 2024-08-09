@@ -35,8 +35,8 @@ public class ExcelReportService {
             String headerText = String.format(
                     "Информация по счету № %d с %s по %s",
                     report.getAccount().getAccountId(),
-                    report.getStatementPeriodStart(),
-                    report.getConsolidateAccount().getBalanceAfterEndPeriod().format(FORMATTER)
+                    report.getStatementPeriodStart().format(FORMATTER),
+                    report.getStatementPeriodEnd().format(FORMATTER)
             );
 
             Row headerRow = sheet.createRow(0);
@@ -59,7 +59,7 @@ public class ExcelReportService {
             consolidateHeaderRow.createCell(0).setCellValue("Consolidated Account on this period:");
             consolidateHeaderRow.getCell(0).setCellStyle(createSubHeaderStyle(workbook));
 
-            createConsolidateAccountRows(sheet, rowNum, report.getConsolidateAccount());
+            createConsolidateAccountRows(sheet, rowNum, report);
 
             // Transactions
             rowNum += 7; // Leave space after consolidate account
@@ -106,22 +106,22 @@ public class ExcelReportService {
         row.createCell(1).setCellValue(account.getSubType());
     }
 
-    private void createConsolidateAccountRows(Sheet sheet, int rowNum, ConsolidateAccount consolidateAccount) {
+    private void createConsolidateAccountRows(Sheet sheet, int rowNum, AccountReport accountReport) {
         Row row = sheet.createRow(rowNum++);
         row.createCell(0).setCellValue("Total Receive Amount:");
-        row.createCell(1).setCellValue(consolidateAccount.getTotalReceiveAmount().toString());
+        row.createCell(1).setCellValue(accountReport.getConsolidateAccount().getTotalReceiveAmount().toString());
 
         row = sheet.createRow(rowNum++);
         row.createCell(0).setCellValue("Total Send Amount:");
-        row.createCell(1).setCellValue(consolidateAccount.getTotalSendAmount().toString());
+        row.createCell(1).setCellValue(accountReport.getConsolidateAccount().getTotalSendAmount().toString());
 
         row = sheet.createRow(rowNum++);
         row.createCell(0).setCellValue("Balance Before Start Period:");
-        row.createCell(1).setCellValue(consolidateAccount.getBalanceBeforeStartPeriod().format(FORMATTER));
+        row.createCell(1).setCellValue(accountReport.getStatementPeriodStart().format(FORMATTER));
 
         row = sheet.createRow(rowNum++);
         row.createCell(0).setCellValue("Balance After End Period:");
-        row.createCell(1).setCellValue(consolidateAccount.getBalanceAfterEndPeriod().format(FORMATTER));
+        row.createCell(1).setCellValue(accountReport.getStatementPeriodEnd().format(FORMATTER));
     }
 
     private void createTransactionRows(Sheet sheet, int rowNum, List<Transaction> transactions, Account account) {

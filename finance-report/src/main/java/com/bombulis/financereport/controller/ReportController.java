@@ -39,8 +39,8 @@ public class ReportController {
         consolidateAccount.setAccountId(123L);
         consolidateAccount.setTotalReceiveAmount(BigDecimal.valueOf(1000));
         consolidateAccount.setTotalSendAmount(BigDecimal.valueOf(500));
-        consolidateAccount.setBalanceBeforeStartPeriod(LocalDateTime.now().minusDays(30));
-        consolidateAccount.setBalanceAfterEndPeriod(LocalDateTime.now());
+        consolidateAccount.setBalanceBeforeStartPeriod(BigDecimal.valueOf(1000));
+        consolidateAccount.setBalanceAfterEndPeriod(BigDecimal.valueOf(1500));
 
         Transaction transaction = new Transaction();
         transaction.setId(1L);
@@ -57,8 +57,8 @@ public class ReportController {
         report.setStatementId("STAT123");
         report.setAccountNumber("1234567890");
         report.setAccountHolderName("John Doe");
-        report.setStatementPeriodStart("2024-01-01");
-        report.setStatementPeriodEnd("2024-01-31");
+        report.setStatementPeriodStart((LocalDateTime.now().minusDays(30)));
+        report.setStatementPeriodEnd((LocalDateTime.now()));
         report.setAccount(account);
         report.setConsolidateAccount(consolidateAccount);
         report.setTransactions(Arrays.asList(transaction));
