@@ -20,5 +20,10 @@ public class AccountReport {
     private Account account;
     private ConsolidateAccount consolidateAccount;
     private List<Transaction> transactions;
+    private String documentType;
 
+
+    public AccountReport(String documentType) {
+        this.documentType = documentType;
+    }
 }

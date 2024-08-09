@@ -41,7 +41,7 @@ public class ReportService {
         if (!(account instanceof CurrencyAccount)){
             throw new AccountOtherType("Аккаунты данного типа не поддерживают выписку");
         }
-        AccountReport accountReport = new AccountReport();
+        AccountReport accountReport = new AccountReport("BANK_STATEMENT");
         accountReport.setStatementPeriodStart(startPeriod);
         accountReport.setStatementPeriodEnd(endPeriod);
         accountReport.setAccountNumber(account.getId().toString());
