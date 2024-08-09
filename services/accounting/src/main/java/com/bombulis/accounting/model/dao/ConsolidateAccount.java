@@ -6,9 +6,10 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
+@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class ConsolidateAccount {
     private Long accountId;
     private BigDecimal totalReceiveAmount;

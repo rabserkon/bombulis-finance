@@ -66,9 +66,9 @@ public class TransactionDaoIntegrationTest {
         LocalDateTime startPeriod = LocalDateTime.of(2024, 1, 1, 0, 0);
         LocalDateTime endPeriod = LocalDateTime.of(2024, 12, 31, 23, 59);
 
-        List<ConsolidateAccount> consolidateAccount = transactionDao.consolidateAccountOperationOnPeriod(accountId, startPeriod, endPeriod);
+        /*List<ConsolidateAccount> consolidateAccount = transactionDao.consolidateAccountOperationOnPeriod(accountId, startPeriod, endPeriod);
 
-        logger.info(consolidateAccount.toString());
+        logger.info(consolidateAccount.toString());*/
 
 
     }

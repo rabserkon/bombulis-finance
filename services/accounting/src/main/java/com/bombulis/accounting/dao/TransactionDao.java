@@ -27,7 +27,7 @@ public class TransactionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    protected List<Transaction> findTransactionByAccountOnPeriod(
+    public List<Transaction> findTransactionByAccountOnPeriod(
             Long accountId,
             LocalDateTime startPeriod,
             LocalDateTime endPeriod,
@@ -58,7 +58,7 @@ public class TransactionDao {
     }
 
 
-    protected List<ConsolidateAccount> consolidateAccountOperationOnPeriod(
+    public ConsolidateAccount consolidateAccountOperationOnPeriod(
             Long accountId,
             LocalDateTime startPeriod,
             LocalDateTime endPeriod
@@ -113,7 +113,7 @@ public class TransactionDao {
                 .addValue("startDate", startPeriod)
                 .addValue("endDate", endPeriod);
 
-        return namedParameterJdbcTemplate.query(queryBuilder.toString(), parameters, new ConsolidateAccountRowMapper());
+        return namedParameterJdbcTemplate.queryForObject(queryBuilder.toString(), parameters, new ConsolidateAccountRowMapper());
     }
 
     private static final class TransactionRowMapper implements RowMapper<Transaction> {

@@ -1,8 +1,6 @@
 package com.bombulis.accounting.model.dao;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
@@ -13,6 +11,9 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Transaction {
     private Long id;
     private Long senderAccountId;
