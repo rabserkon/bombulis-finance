@@ -24,7 +24,7 @@ public class MessageConsumer {
     @KafkaListener(topics = "reports-topic", groupId = "reports-group")
     public void listen(String message) {
         try {
-            if (message.contains("statementId")) {
+            if (message.contains("documentType")) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.registerModule(new JavaTimeModule());
                 AccountReport report = objectMapper.readValue(message, AccountReport.class);
