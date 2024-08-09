@@ -80,7 +80,25 @@ services:
       - mongodb_data:/data/db
     environment:
       MONGO_INITDB_DATABASE: reports-db
+    networks:
+      - finance
 
+  finance-report:
+    container_name: global-finance-report
+    build:
+      context: ./finance-report
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      - reports-db
+    environment:
+      URL_DB: mongodb://reports-db:27017/reports-db
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      BROKER_HOST: ${BROKER_HOST}
+    networks:
+      - finance
 
 
 networks:

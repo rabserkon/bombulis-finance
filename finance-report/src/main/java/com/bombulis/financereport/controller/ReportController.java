@@ -23,6 +23,7 @@ public class ReportController {
     @Autowired
     private ExcelReportService excelReportService;
 
+    ///api/reports/download/test
     @GetMapping("/download/test")
     public void downloadReport(HttpServletResponse response) throws IOException {
         // Example data
@@ -48,7 +49,7 @@ public class ReportController {
         transaction.setDescription("Payment");
         transaction.setType("Credit");
         transaction.setTransactionDate(LocalDateTime.now());
-        transaction.setSendAmount(BigDecimal.ZERO);
+        transaction.setSendAmount(BigDecimal.valueOf(100));
         transaction.setReceivedAmount(BigDecimal.valueOf(100));
         transaction.setExchangeRate(BigDecimal.ONE);
 

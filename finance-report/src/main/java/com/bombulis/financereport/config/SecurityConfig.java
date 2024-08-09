@@ -21,11 +21,6 @@ public class SecurityConfig {
                                 .requestMatchers("/api/reports/**").permitAll()
                                 .anyRequest()
                 )
-                .formLogin(formLogin ->
-                        formLogin
-                                .loginPage("/login")
-                                .permitAll()
-                )
                 .logout(logout ->
                         logout.permitAll()
                 );

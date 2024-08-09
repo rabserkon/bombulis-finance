@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -25,6 +26,9 @@ public class ExcelReportService {
 
             // Set page size to A4
             sheet.getPrintSetup().setPaperSize(PrintSetup.A4_PAPERSIZE);
+            sheet.getPrintSetup().setFitWidth((short) 1); // Fit to 1 page wide
+            sheet.getPrintSetup().setFitHeight((short) 0); // Do not limit height
+
 
 
             // Set header
@@ -38,7 +42,7 @@ public class ExcelReportService {
             Row headerRow = sheet.createRow(0);
             Cell headerCell = headerRow.createCell(0);
             headerCell.setCellValue(headerText);
-            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 8)); // Merge cells for header
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 6)); // Merge cells for header
             headerCell.setCellStyle(createHeaderStyle(workbook));
 
             // Account Information
@@ -63,7 +67,7 @@ public class ExcelReportService {
             transactionsHeaderRow.createCell(0).setCellValue("Transactions:");
             transactionsHeaderRow.getCell(0).setCellStyle(createSubHeaderStyle(workbook));
 
-            createTransactionRows(sheet, rowNum, report.getTransactions());
+            createTransactionRows(sheet, rowNum, report.getTransactions(), report.getAccount());
 
             // Set column widths
             for (int i = 0; i <= 8; i++) {
@@ -120,17 +124,16 @@ public class ExcelReportService {
         row.createCell(1).setCellValue(consolidateAccount.getBalanceAfterEndPeriod().format(FORMATTER));
     }
 
-    private void createTransactionRows(Sheet sheet, int rowNum, List<Transaction> transactions) {
+    private void createTransactionRows(Sheet sheet, int rowNum, List<Transaction> transactions, Account account) {
         Row headerRow = sheet.createRow(rowNum++);
         headerRow.createCell(0).setCellValue("ID");
         headerRow.createCell(1).setCellValue("Sender Account ID");
         headerRow.createCell(2).setCellValue("Received Account ID");
         headerRow.createCell(3).setCellValue("Description");
-        headerRow.createCell(4).setCellValue("Type");
-        headerRow.createCell(5).setCellValue("Transaction Date");
-        headerRow.createCell(6).setCellValue("Send Amount");
-        headerRow.createCell(7).setCellValue("Received Amount");
-        headerRow.createCell(8).setCellValue("Exchange Rate");
+        headerRow.createCell(4).setCellValue("Transaction Date");
+        headerRow.createCell(5).setCellValue("Amount");
+        headerRow.createCell(6).setCellValue("Currency");
+
 
         for (Transaction transaction : transactions) {
             Row row = sheet.createRow(rowNum++);
@@ -138,11 +141,22 @@ public class ExcelReportService {
             row.createCell(1).setCellValue(transaction.getSenderAccountId().toString());
             row.createCell(2).setCellValue(transaction.getReceivedAccountId().toString());
             row.createCell(3).setCellValue(transaction.getDescription());
-            row.createCell(4).setCellValue(transaction.getType());
-            row.createCell(5).setCellValue(transaction.getTransactionDate().format(FORMATTER));
-            row.createCell(6).setCellValue(transaction.getSendAmount().toString());
-            row.createCell(7).setCellValue(transaction.getReceivedAmount().toString());
-            row.createCell(8).setCellValue(transaction.getExchangeRate().toString());
+            row.createCell(4).setCellValue(transaction.getTransactionDate().format(FORMATTER));
+            row.createCell(5).setCellValue(getAmountTransaction(transaction,account).toString());
+            row.createCell(6).setCellValue(account.getCurrency());
+
+        }
+    }
+
+    private StringBuilder getAmountTransaction(Transaction transaction, Account account){
+        if (transaction.getSenderAccountId() == account.getAccountId()){
+            BigDecimal amountMinus = transaction.getSendAmount();
+            return new StringBuilder().append("- ").append(amountMinus.toString()).append(" " + account.getCurrency());
+        } else if (transaction.getReceivedAccountId() == account.getAccountId()){
+            BigDecimal amountPlus = transaction.getReceivedAmount() != null ? transaction.getReceivedAmount() : transaction.getSendAmount();
+            return new StringBuilder().append("+ ").append(amountPlus.toString()).append(" " + account.getCurrency());
+        } else {
+            return new StringBuilder().append("bad operation");
         }
     }
 
