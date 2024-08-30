@@ -6,6 +6,7 @@ import com.bombulis.accounting.dto.ResponseAccountDTO;
 import com.bombulis.accounting.dto.ResponseTransaction;
 import com.bombulis.accounting.entity.Account;
 import com.bombulis.accounting.entity.AccountType;
+import com.bombulis.accounting.entity.Currency;
 import com.bombulis.accounting.service.AccountService.AccountService;
 import com.bombulis.accounting.service.AccountService.AccountTypeService;
 import com.bombulis.accounting.service.AccountService.FinancingSourceService;
@@ -37,10 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -97,17 +95,22 @@ public class ServiceController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     private ResponseEntity<?> dashboardInformation(
             Authentication authentication
-    ) throws CurrencyNonFound, ServerDataAssetsException, AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType, NotFoundUser {
+    ) throws CurrencyNonFound, AccountNonFound, CurrencyMismatchException, AccountTypeMismatchException, AccountOtherType, NotFoundUser {
         MultiAuthToken authToken = ((MultiAuthToken) authentication);
         Map<String, Object> response = new HashMap<>();
         List<Account> accountList = (List<Account>) accountService.findUserAccounts(authToken.getUserId());
         response.put("currencies", currencyService.getAllCurrencies().stream()
                 .map(i -> new CurrencyDTO(i)).collect(Collectors.toList()));
-        response.put("currencies_rates", rateService.getExchangeRate(
-                currencyService.getAllCurrencies(),
-                currencyService.getAllCurrencies(),
-                new Date()
-        ));
+        try {
+            response.put("currencies_rates", rateService.getExchangeRate(
+                    currencyService.getAllCurrencies(),
+                    currencyService.getAllCurrencies(),
+                    new Date()
+            ));
+        } catch (ServerDataAssetsException e) {
+            response.put("currencies_rates", new ArrayList<Currency>());
+        }
+        response.put("currencies_rates", new ArrayList<Currency>());
         /*response.put("revaluation_account", revaluationAccountService.getRevaluationAccountList(accountList,
                 "USD",
                 new Date()));*/
