@@ -208,6 +208,43 @@ public class YahooClient {
             return "";
         }
     }
+
+
+    public String getTickerPeriodInfo(String symbol, String range, String interval) {
+        try {
+            String url = buildUrl(symbol, range, interval);
+
+            client = (HttpURLConnection) new URL(url).openConnection();
+            client.setRequestProperty("User-Agent", userAgent);
+            client.setRequestProperty("Accept", "application/json");
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            JsonObject jsonResponse = gson.fromJson(reader, JsonObject.class);
+
+            JsonObject result = jsonResponse.getAsJsonArray("quoteResponse").get(0).getAsJsonObject();
+            return result.get("shortName").getAsString() + ", " + result.get("currency").getAsString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+
+    private static String buildUrl(String symbols, String range, String interval) {
+        String baseUrl = "https://query1.finance.yahoo.com/v7/finance/spark";
+        StringBuilder urlBuilder = new StringBuilder(baseUrl);
+
+        urlBuilder.append("?symbols=").append(symbols)
+                .append("&range=").append(range)
+                .append("&interval=").append(interval)
+                .append("&indicators=close")
+                .append("&includeTimestamps=").append(false)
+                .append("&includePrePost=").append(false)
+                .append("&corsDomain=").append("finance.yahoo.com")
+                .append("&.tsrc=").append("finance");
+
+        return urlBuilder.toString();
+    }
 }
 
 
