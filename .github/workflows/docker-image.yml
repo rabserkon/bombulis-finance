@@ -27,8 +27,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ./services/accounting
-          dockerfile: ./services/accounting/Dockerfile
+          context: ./accounting
+          dockerfile: ./accounting/Dockerfile
           push: true
           tags: |
             rabserkon/finance:latest

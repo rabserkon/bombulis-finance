@@ -52,7 +52,7 @@ services:
   finance-module:
     container_name: global-finance-module
     build:
-      context: ./services/accounting
+      context: ./accounting
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
