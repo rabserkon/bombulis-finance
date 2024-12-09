@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option java_package = "com.bombulis.stock.control.proto";
+
+package com.bombulis.accounting.proto;
+
+import "google/protobuf/timestamp.proto";
+
+message TransactionRequest {
+  string account_id = 1;      // Номер аккаунта
+  string currency = 2;        // Валюта аккаунта (например, "USD", "EUR")
+  double amount = 3;          // Сумма операции
+  string comment = 4;         // Комментарий операции
+  OperationType operation = 5; // Тип операции (СПИСАНИЕ или ПОПОЛНЕНИЕ)
+  string user_id = 6; //Id пользователя
+  string broker_account_id = 7;
+  string equity_account_id = 8;
+  google.protobuf.Timestamp date = 9;
+}
+
+// Тип операции
+enum OperationType {
+  BUY = 0; // Списание
+  SELL = 1; // Пополнение
+}
+
+// Сообщение для ответа на запрос
+message TransactionResponse {
+  bool success = 1;           // Успех операции
+  string message = 2;         // Сообщение (например, описание ошибки)
+}
+
+service TransactionService {
+  rpc Debit (TransactionRequest) returns (TransactionResponse);
+}

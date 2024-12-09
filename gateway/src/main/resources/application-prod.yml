@@ -1,0 +1,31 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: authentication-service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/auth/**
+
+        - id: account-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/accounts/**
+          filters:
+            - name: JwtAuthenticationFilter
+
+        - id: minecraft-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/mineserv/**
+          filters:
+            - name: JwtAuthenticationFilter
+  redis:
+    - port: 6380
+    - host: localhost
+    - password: 0bed2f9K)@2-7ba[[b9-40EP_WEdf-879d-1b592aYY(2a7c42
+    - ssl: false
+
+
+jwt:
+  secret: 85f7dd24c7e24c44c90988742465dda35c75f40286ed4fa566a3a8fd5c0daefe

@@ -1,7 +1,7 @@
 package com.bombulis.accounting.service.NasdaqApi;
 
 
-import com.bombulis.accounting.service.AccountService.exception.ServerDataAssetsException;
+import com.bombulis.accounting.service.AccountService.exception.Acc_ServerDataAssetsException;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -32,7 +32,7 @@ public class YahooClient {
 
     private HttpURLConnection client;
     private static final Logger logger = LoggerFactory.getLogger(YahooClient.class);
-    public YahooClient() throws ServerDataAssetsException {
+    public YahooClient() throws Acc_ServerDataAssetsException {
         this.a1 = "";
         this.a1s = "";
         this.a3 = "";
@@ -69,7 +69,7 @@ public class YahooClient {
             client.disconnect();
 
         } catch (IOException e) {
-            throw new ServerDataAssetsException("Yahoo server returned HTTP response bad");
+            throw new Acc_ServerDataAssetsException("Yahoo server returned HTTP response bad");
         }
     }
     public List<JsonObject> getCurrentTickers(List<String> symbols) throws IOException {

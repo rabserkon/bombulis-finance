@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option java_package = "com.bombulis.stock.control.proto";
+
+package com.bombulis.accounting.proto;
+
+import "google/protobuf/timestamp.proto";
+
+// DTO для информации о счете
+message Account {
+  int64 id = 1;
+  string name = 2;
+  google.protobuf.Timestamp create_at = 3;
+  google.protobuf.Timestamp lastUpdate_at = 4;
+  bool deleted = 5;
+  bool archive = 6;
+  string type = 7;
+  string description = 8;
+  AccCurrency currency = 9;
+  string balance = 10;
+  string subAccount = 11;
+}
+
+// DTO для валюты счета
+message AccCurrency {
+  string currencyCode = 1;  // Пример валюты
+  string currencyName = 2;  // Название валюты
+}
+
+// DTO для баланса и пересмотра
+message AccBalanceDTO {
+  int64 accountId = 1;
+  string balance = 2;  // Баланс как строка (BigDecimal)
+  string revaluationBalance = 3;  // Пересмотренный баланс
+  AccRateDTO currency = 4;  // Валюта
+}
+
+// DTO для информации о валютном курсе
+message AccRateDTO {
+  string rate = 1;  // Курс валюты
+  string currency = 2;  // Валюта
+}
+
+// Запрос для получения счета по ID и ID пользователя
+message GetAccountRequest {
+  int64 accountId = 1;
+  int64 userId = 2;
+}
+
+
+// Запрос для получения списка счетов по ID пользователя
+message GetAccountsRequest {
+  int64 userId = 1;
+}
+
+// Ответ для списка счетов
+message GetAccountsResponse {
+  repeated Account accounts = 1;
+}
+
+// Ответ для получения счета
+message GetAccountResponse {
+  Account account = 1;
+  AccBalanceDTO balanceInfo = 2;
+}
+
+// Сервис для получения информации о счете
+service AccountService {
+  rpc GetAccountInfo(GetAccountRequest) returns (GetAccountResponse);
+  rpc GetAccounts(GetAccountsRequest) returns (GetAccountsResponse);
+}

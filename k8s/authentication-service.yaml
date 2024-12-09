@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication
+  namespace: auth
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: authentication
+  template:
+    metadata:
+      labels:
+        app: authentication
+    spec:
+      containers:
+        - name: authentication-service
+          image: rabserkon/authentication:latest
+          ports:
+            - containerPort: 8080
+          env:
+          - name: DATASOURCE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: auth-config
+                key: DATASOURCE_URL
+          - name: DATASOURCE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: auth-config
+                key: DATASOURCE_NAME
+          - name: DATASOURCE_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: auth-config
+                key: DATASOURCE_USERNAME
+          - name: DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: auth-secrets
+                key: DATASOURCE_PASSWORD
+          - name: DATASOURCE_DRIVER
+            valueFrom:
+              configMapKeyRef:
+                name: auth-config
+                key: DATASOURCE_DRIVER
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: auth-secrets
+                key: JWT_SECRET
+          - name: JWT_EXPIRATION
+            valueFrom:
+              secretKeyRef:
+                name: auth-secrets
+                key: JWT_EXPIRATION
+          - name: RECAPTCHA_SITE_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: auth-config
+                key: RECAPTCHA_SITE_KEY
+          - name: RECAPTCHA_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: auth-secrets
+                key: RECAPTCHA_SECRET_KEY
+          - name: LOGIN_TOKEN_DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: auth-config
+                key: LOGIN_TOKEN_DB_HOST
+          - name: LOGIN_TOKEN_DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: auth-config
+                key: LOGIN_TOKEN_DB_PORT
+          - name: LOGIN_TOKEN_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: auth-secrets
+                key: LOGIN_TOKEN_DB_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication
+  namespace: auth
+spec:
+  type: LoadBalancer
+  selector:
+    app: authentication
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8080

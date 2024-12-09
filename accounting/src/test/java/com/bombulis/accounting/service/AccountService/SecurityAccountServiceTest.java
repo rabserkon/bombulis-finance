@@ -1,16 +1,16 @@
 package com.bombulis.accounting.service.AccountService;
 
 
-import com.bombulis.accounting.entity.Currency;
-import com.bombulis.accounting.entity.SecurityPositionAccount;
-import com.bombulis.accounting.entity.User;
+import com.bombulis.accounting.entity.Acc_Currency;
+import com.bombulis.accounting.entity.Acc_SecurityPositionAccount;
+import com.bombulis.accounting.entity.Acc_User;
 
-import com.bombulis.accounting.dto.SecurityAccountDTO;
-import com.bombulis.accounting.repository.CurrencyRepository;
-import com.bombulis.accounting.service.AccountService.exception.AccountException;
-import com.bombulis.accounting.service.CurrencyService.CurrencyNonFound;
-import com.bombulis.accounting.service.UserService.UserException;
-import com.bombulis.accounting.service.UserService.UserServiceImpl;
+import com.bombulis.accounting.dto.Acc_SecurityAccountDTO;
+import com.bombulis.accounting.repository.Acc_CurrencyRepository;
+import com.bombulis.accounting.service.AccountService.exception.Acc_AccountException;
+import com.bombulis.accounting.service.CurrencyService.Acc_CurrencyNonFound;
+import com.bombulis.accounting.service.UserService.Acc_UserException;
+import com.bombulis.accounting.service.UserService.Acc_UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,13 +27,13 @@ import static org.mockito.Mockito.when;
 public class SecurityAccountServiceTest {
 
     @Mock
-    private UserServiceImpl userService;
+    private Acc_UserServiceImpl userService;
 
     @Mock
-    private CurrencyRepository currencyRepository;
+    private Acc_CurrencyRepository currencyRepository;
 
     @InjectMocks
-    private AccountServiceImpl accountService;
+    private Acc_AccountServiceImpl accountService;
 
     @BeforeEach
     public void setUp() {
@@ -41,22 +41,22 @@ public class SecurityAccountServiceTest {
     }
 
     @Test
-    public void testCreateAccount() throws CurrencyNonFound, IOException, UserException, AccountException {
+    public void testCreateAccount() throws Acc_CurrencyNonFound, IOException, Acc_UserException, Acc_AccountException {
         // Arrange
         Long userId = 1L;
         String ticker = "AAPL";
-        SecurityAccountDTO securityAccountDTO = new SecurityAccountDTO();
+        Acc_SecurityAccountDTO securityAccountDTO = new Acc_SecurityAccountDTO();
         securityAccountDTO.setTicker(ticker);
 
-        User user = new User();
+        Acc_User user = new Acc_User();
         user.setUserId(userId);
         when(userService.findUserById(userId)).thenReturn(user);
 
-        Currency currency = new Currency( "United States Dollar", "USD");
+        Acc_Currency currency = new Acc_Currency( "United States Dollar", "USD");
         when(currencyRepository.findCurrencyByIsoCode("USD")).thenReturn(Optional.of(currency));
 
         // Act
-        SecurityPositionAccount result = (SecurityPositionAccount) accountService.createAccount(securityAccountDTO, userId);
+        Acc_SecurityPositionAccount result = (Acc_SecurityPositionAccount) accountService.createAccount(securityAccountDTO, userId);
 
         // Assert
         //assertNotNull(result);

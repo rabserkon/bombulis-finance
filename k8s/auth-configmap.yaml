@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-config
+  namespace: auth
+data:
+  DATASOURCE_URL: jdbc:postgresql://auth-db.auth.svc.cluster.local:5432/auth-db?serverTimezone=Europe/Moscow
+  DATASOURCE_NAME: auth-db
+  DATASOURCE_USERNAME: hsksq1221
+  DATASOURCE_DRIVER: org.postgresql.Driver
+  RECAPTCHA_SITE_KEY: 6LfeBXwfAAAAAJsA9RCj-edZlIlBNJYYQXCGKZC_
+  LOGIN_TOKEN_DB_HOST: session-db.auth.svc.cluster.local
+  LOGIN_TOKEN_DB_PORT: "6379"

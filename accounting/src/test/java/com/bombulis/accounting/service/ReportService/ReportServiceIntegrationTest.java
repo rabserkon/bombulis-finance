@@ -1,12 +1,12 @@
 package com.bombulis.accounting.service.ReportService;
 
-import com.bombulis.accounting.config.DatabaseConfig;
-import com.bombulis.accounting.config.ModuleConfig;
-import com.bombulis.accounting.dao.TransactionDaoIntegrationTest;
-import com.bombulis.accounting.model.dao.AccountReport;
-import com.bombulis.accounting.service.AccountService.exception.AccountNonFound;
-import com.bombulis.accounting.service.AccountService.exception.AccountOtherType;
-import com.bombulis.accounting.service.AccountService.exception.AccountTypeMismatchException;
+import com.bombulis.accounting.config.Acc_DatabaseConfig;
+import com.bombulis.accounting.config.Acc_ModuleConfig;
+import com.bombulis.accounting.dao.AccTransactionDaoIntegrationTest;
+import com.bombulis.accounting.model.dao.Acc_AccountReport;
+import com.bombulis.accounting.service.AccountService.exception.Acc_AccountNonFound;
+import com.bombulis.accounting.service.AccountService.exception.Acc_AccountOtherType;
+import com.bombulis.accounting.service.AccountService.exception.Acc_AccountTypeMismatchException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDateTime;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {ModuleConfig.class, DatabaseConfig.class})
+@ContextConfiguration(classes = {Acc_ModuleConfig.class, Acc_DatabaseConfig.class})
 @ActiveProfiles("dev")
 @TestPropertySource(properties = {
         "spring.profiles.active=dev",
@@ -28,19 +28,19 @@ import java.time.LocalDateTime;
 public class ReportServiceIntegrationTest {
 
     @Autowired
-    private ReportService reportService;
+    private Acc_ReportService reportService;
 
-    private static final Logger logger = LoggerFactory.getLogger(TransactionDaoIntegrationTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccTransactionDaoIntegrationTest.class);
 
 
     @Test
-    void  testCreateAccountReport() throws AccountTypeMismatchException, AccountNonFound, AccountOtherType {
+    void  testCreateAccountReport() throws Acc_AccountTypeMismatchException, Acc_AccountNonFound, Acc_AccountOtherType {
         Long userId = 5L;
         Long accountId = 18L;
         LocalDateTime startPeriod = LocalDateTime.of(2024, 1, 1, 0, 0);
         LocalDateTime endPeriod = LocalDateTime.of(2024, 12, 31, 23, 59);
 
-        AccountReport accountReport = reportService.createAccountReport(accountId,userId, startPeriod, endPeriod);
+        Acc_AccountReport accountReport = reportService.createAccountReport(accountId,userId, startPeriod, endPeriod);
 
         logger.info(accountReport.toString());
 
