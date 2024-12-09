@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package com.bombulis.accounting.proto;
+
+
+service CurrencyService {
+  rpc GetCurrencyInfo(CurrencyRequest) returns (CurrencyResponse);
+}
+
+message CurrencyRequest {
+  string isoCode = 1;
+}
+
+message CurrencyResponse {
+  string currencyId = 1;
+  string isoCode = 2;
+  string numericCode = 3;
+}
