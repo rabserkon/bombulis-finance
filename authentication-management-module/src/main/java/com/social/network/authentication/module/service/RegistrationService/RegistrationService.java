@@ -3,7 +3,6 @@ package com.social.network.authentication.module.service.RegistrationService;
 import com.social.network.authentication.module.component.exception.CodeTokenCreateException;
 import com.social.network.authentication.module.dto.ResponseRegistrationDTO;
 import com.social.network.authentication.module.dto.UserDTO;
-import com.social.network.authentication.module.entity.CodeToken;
 import com.social.network.authentication.module.entity.User;
 import com.social.network.authentication.module.service.CredentialRecoveryService.TokenException;
 

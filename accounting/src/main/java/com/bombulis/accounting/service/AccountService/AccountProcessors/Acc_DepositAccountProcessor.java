@@ -11,20 +11,19 @@ import com.bombulis.accounting.repository.Acc_CurrencyRepository;
 import com.bombulis.accounting.service.AccountService.Acc_AccountType;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountException;
 import com.bombulis.accounting.service.CurrencyService.Acc_CurrencyNonFound;
+import com.bombulis.accounting.service.CurrencyService.Acc_CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Acc_DepositAccountProcessor implements Acc_AccountProcessor {
-    @Autowired
-    private Acc_CurrencyRepository currencyRepository;
-    @Autowired
+
+    private Acc_CurrencyService currencyService;
     private Acc_AccountRepository accountRepository;
 
     @Override
     public <T extends Acc_Account> T processCreateAccount(Acc_AccountDTO accountDTO, Acc_User user) throws Acc_CurrencyNonFound, Acc_AccountException {
-        Acc_Currency currency = currencyRepository.findCurrencyByIsoCode(accountDTO.getCurrency())
-                .orElseThrow(()->new Acc_CurrencyNonFound("Currency with code " + accountDTO.getCurrency() + " not found"));
+        Acc_Currency currency = currencyService.findCurrencyByIsoCode(accountDTO.getCurrency());
         Acc_FinancingSource account = new Acc_FinancingSource(accountDTO.getName(),currency,user);
         account.setDescription(accountDTO.getDescription());
         account.setType(Acc_AccountType.DEPOSIT.name().toUpperCase());
@@ -39,5 +38,15 @@ public class Acc_DepositAccountProcessor implements Acc_AccountProcessor {
     @Override
     public Acc_AccountType getAccountType() {
         return Acc_AccountType.DEPOSIT;
+    }
+
+    @Autowired
+    public void setCurrencyService(Acc_CurrencyService currencyService) {
+        this.currencyService = currencyService;
+    }
+
+    @Autowired
+    public void setAccountRepository(Acc_AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 }

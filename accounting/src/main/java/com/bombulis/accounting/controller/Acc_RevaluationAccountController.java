@@ -45,7 +45,7 @@ public class Acc_RevaluationAccountController {
                                                     @RequestParam(name = "currency") String currencyStr,
                                                     Authentication authentication) throws Acc_AccountNonFound, Acc_CurrencyNonFound, Acc_CurrencyMismatchException, Acc_AccountTypeMismatchException, Acc_AccountOtherType, Acc_ServerDataAssetsException, Acc_CurrencyRateException {
         Map<String, Object> response = new HashMap<>();
-        Acc_Currency currency = currencyService.findCurrency(currencyStr);
+        Acc_Currency currency = currencyService.findCurrencyByIsoCode(currencyStr);
         Date date = new Date();
         if (localDate != null){
              date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());

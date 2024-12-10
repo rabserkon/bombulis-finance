@@ -15,10 +15,8 @@ import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEn
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -31,7 +29,6 @@ public class Acc_JwtTokenFilter extends OncePerRequestFilter {
 
     private Acc_AuthenticationService authenticationService;
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
     private Acc_DefaultBearerTokenResolver bearerTokenResolver = new Acc_DefaultBearerTokenResolver();
     private AuthenticationEntryPoint authenticationEntryPoint = new OAuth2AuthenticationEntryPoint();
     private SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();

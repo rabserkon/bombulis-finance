@@ -11,20 +11,20 @@ import com.bombulis.accounting.repository.Acc_CurrencyRepository;
 import com.bombulis.accounting.service.AccountService.Acc_AccountType;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountException;
 import com.bombulis.accounting.service.CurrencyService.Acc_CurrencyNonFound;
+import com.bombulis.accounting.service.CurrencyService.Acc_CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Acc_CurrencyAccountProcessor implements Acc_AccountProcessor {
 
-    private Acc_CurrencyRepository currencyRepository;
+    private Acc_CurrencyService currencyRepository;
     private Acc_AccountRepository accountRepository;
 
     @Override
     public <T extends Acc_Account> T processCreateAccount(Acc_AccountDTO accountDTO, Acc_User user) throws Acc_CurrencyNonFound, Acc_AccountException {
         Acc_CurrencyAccount account = new Acc_CurrencyAccount(accountDTO.getName(), user);
-        Acc_Currency currency = currencyRepository.findCurrencyByIsoCode(accountDTO.getCurrency())
-                .orElseThrow(()->new Acc_CurrencyNonFound("Currency with code " + accountDTO.getCurrency() + " not found"));
+        Acc_Currency currency = currencyRepository.findCurrencyByIsoCode(accountDTO.getCurrency());
         if (!("CASH".equals(accountDTO.getSubType()) || "BANK".equals(accountDTO.getSubType()))) {
             throw new Acc_AccountException("Неподходящий тип счета: " + accountDTO.getSubType());
         }
@@ -40,14 +40,14 @@ public class Acc_CurrencyAccountProcessor implements Acc_AccountProcessor {
         return null;
     }
 
-
     @Override
     public Acc_AccountType getAccountType() {
         return Acc_AccountType.CURRENCY;
     }
 
+
     @Autowired
-    public void setCurrencyRepository(Acc_CurrencyRepository currencyRepository) {
+    public void setCurrencyRepository(Acc_CurrencyService currencyRepository) {
         this.currencyRepository = currencyRepository;
     }
 

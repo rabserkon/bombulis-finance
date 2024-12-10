@@ -1,10 +1,5 @@
 package com.social.network.authentication.module.config;
 
-import io.lettuce.core.ClientOptions;
-import io.lettuce.core.SslOptions;
-import io.lettuce.core.protocol.ProtocolVersion;
-import io.lettuce.core.resource.DefaultClientResources;
-import io.netty.handler.ssl.SslContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +16,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 
-
-import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
 
 @Configuration
 @PropertySource("classpath:application-${spring.profiles.active}.properties")

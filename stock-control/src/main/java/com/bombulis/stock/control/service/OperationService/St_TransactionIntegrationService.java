@@ -5,8 +5,6 @@ import com.bombulis.stock.control.model.St_OperationType;
 import com.bombulis.stock.control.proto.Transaction;
 import com.bombulis.stock.control.proto.TransactionServiceGrpc;
 import io.grpc.ManagedChannel;
-import io.grpc.stub.StreamObserver;
-import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;

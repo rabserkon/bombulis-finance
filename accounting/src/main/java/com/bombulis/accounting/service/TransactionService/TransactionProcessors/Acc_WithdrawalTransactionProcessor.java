@@ -6,8 +6,8 @@ import com.bombulis.accounting.entity.*;
 import com.bombulis.accounting.repository.Acc_AccountRepository;
 import com.bombulis.accounting.repository.Acc_TransactionRepository;
 import com.bombulis.accounting.repository.Acc_UserRepository;
-import com.bombulis.accounting.service.AccountService.exception.Acc_AccountNonFound;
 import com.bombulis.accounting.service.AccountService.Acc_AccountService;
+import com.bombulis.accounting.service.AccountService.exception.Acc_AccountNonFound;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountTypeMismatchException;
 import com.bombulis.accounting.service.TransactionService.exception.Acc_CurrencyMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,6 @@ public class Acc_WithdrawalTransactionProcessor implements Acc_TransactionProces
 
     private Acc_AccountService accountService;
     private Acc_TransactionRepository transactionRepository;
-    private Acc_UserRepository userRepository;
     private Acc_AccountRepository accountRepository;
 
     @Override
@@ -78,11 +77,6 @@ public class Acc_WithdrawalTransactionProcessor implements Acc_TransactionProces
         this.accountRepository = accountRepository;
     }
 
-
-    @Autowired
-    public void setUserRepository(Acc_UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Autowired
     public void setAccountService(Acc_AccountService accountService) {

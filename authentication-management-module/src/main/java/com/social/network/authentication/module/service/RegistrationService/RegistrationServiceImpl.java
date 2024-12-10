@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.UUID;
 
 @Service
 @PropertySource("classpath:security.properties")

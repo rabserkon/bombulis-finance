@@ -2,7 +2,8 @@ package com.bombulis.accounting.entity;
 
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table

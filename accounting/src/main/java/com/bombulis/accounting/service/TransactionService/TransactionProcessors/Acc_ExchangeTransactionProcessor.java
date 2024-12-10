@@ -8,9 +8,9 @@ import com.bombulis.accounting.entity.Acc_TransactionCurrencyExchange;
 import com.bombulis.accounting.entity.Acc_User;
 import com.bombulis.accounting.repository.Acc_AccountRepository;
 import com.bombulis.accounting.repository.Acc_TransactionRepository;
+import com.bombulis.accounting.service.AccountService.Acc_AccountService;
 import com.bombulis.accounting.service.AccountService.Acc_AccountType;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountNonFound;
-import com.bombulis.accounting.service.AccountService.Acc_AccountService;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountTypeMismatchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 
 @Service
@@ -30,10 +28,8 @@ public class Acc_ExchangeTransactionProcessor implements Acc_TransactionProcesso
     private Acc_AccountService accountService;
     private Acc_AccountRepository accountRepository;
     private Acc_TransactionRepository transactionRepository;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private EntityManager entityManager;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     @Transactional
@@ -59,7 +55,6 @@ public class Acc_ExchangeTransactionProcessor implements Acc_TransactionProcesso
         if (transactionDTO.getReceivedAmount() == null) {
             throw new Acc_AccountNonFound("Received Amount is null");
         }
-
         Acc_TransactionCurrencyExchange transactionAccount = new Acc_TransactionCurrencyExchange();
 
         transactionAccount.setDescription(transactionDTO.getDescription());

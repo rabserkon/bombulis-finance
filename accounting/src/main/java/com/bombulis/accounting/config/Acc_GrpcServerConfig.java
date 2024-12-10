@@ -6,7 +6,6 @@ import com.bombulis.accounting.service.AccountService.Acc_AccountIntegrationServ
 import com.bombulis.accounting.service.AccountService.Acc_AccountService;
 import com.bombulis.accounting.service.CurrencyService.Acc_CurrencyServiceImpl;
 import com.bombulis.accounting.service.TransactionService.Acc_TransactionIntegrationService;
-import com.bombulis.accounting.service.TransactionService.TransactionProcessors.Acc_TransactionProcessor;
 import com.bombulis.accounting.service.TransactionService.TransactionProcessors.Acc_TransactionProcessorFactory;
 import com.bombulis.accounting.service.UserService.Acc_UserService;
 import io.grpc.Server;

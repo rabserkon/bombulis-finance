@@ -36,12 +36,7 @@ public class Acc_SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/v1/auth/**").not().authenticated()
-                .antMatchers("/v1/service/**").hasRole("USER")
-                .antMatchers("/v1/revaluations/**").hasRole("USER")
-                .antMatchers("/v1/accounts/**").hasRole("ACCOUNTS")
-                .antMatchers("/v1/sources/**").hasRole("ACCOUNTS")
-                .antMatchers("/v1/transaction/**").hasRole("TRANSACTIONS")
+                .antMatchers("/**").authenticated()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated();
     }

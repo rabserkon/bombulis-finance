@@ -3,7 +3,6 @@ package com.social.network.authentication.module.service.UserService;
 import com.social.network.authentication.module.dto.UserDTO;
 import com.social.network.authentication.module.entity.User;
 import com.social.network.authentication.module.service.RegistrationService.RegistrationException;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface UserService {

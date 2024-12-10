@@ -7,7 +7,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -20,7 +19,7 @@ public class Acc_MessageConsumer {
 
     private Acc_UserService userService;
     private ObjectMapper objectMapper;
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, Object> kafkaTemplate;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -61,7 +60,7 @@ public class Acc_MessageConsumer {
     }
 
     @Autowired
-    public void setKafkaTemplate(KafkaTemplate<String, String> kafkaTemplate) {
+    public void setKafkaTemplate(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 }

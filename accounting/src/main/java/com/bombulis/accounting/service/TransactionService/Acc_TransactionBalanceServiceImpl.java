@@ -1,15 +1,18 @@
 package com.bombulis.accounting.service.TransactionService;
 
-import com.bombulis.accounting.entity.*;
 import com.bombulis.accounting.dto.Acc_BalanceDTO;
 import com.bombulis.accounting.dto.Acc_TransactionDTO;
+import com.bombulis.accounting.entity.Acc_Account;
+import com.bombulis.accounting.entity.Acc_CurrencyAccount;
+import com.bombulis.accounting.entity.Acc_TransactionAccount;
+import com.bombulis.accounting.entity.Acc_User;
 import com.bombulis.accounting.repository.Acc_AccountRepository;
 import com.bombulis.accounting.repository.Acc_TransactionRepository;
 import com.bombulis.accounting.repository.Acc_UserRepository;
+import com.bombulis.accounting.service.AccountService.Acc_AccountService;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountException;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountNonFound;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountOtherType;
-import com.bombulis.accounting.service.AccountService.Acc_AccountService;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountTypeMismatchException;
 import com.bombulis.accounting.service.TransactionService.BalanceProcessors.Acc_BalanceProcessor;
 import com.bombulis.accounting.service.TransactionService.BalanceProcessors.Acc_BalanceProcessorFactory;
@@ -17,6 +20,7 @@ import com.bombulis.accounting.service.TransactionService.TransactionProcessors.
 import com.bombulis.accounting.service.TransactionService.TransactionProcessors.Acc_TransactionProcessorFactory;
 import com.bombulis.accounting.service.TransactionService.exception.Acc_CurrencyMismatchException;
 import com.bombulis.accounting.service.UserService.Acc_UserException;
+import com.bombulis.accounting.service.UserService.Acc_UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class Acc_TransactionBalanceServiceImpl implements Acc_TransactionBalanceService {
 
     private Acc_AccountService accountService;
-    private Acc_UserRepository userRepository;
-    private Acc_TransactionRepository transactionRepository;
-    private Acc_AccountRepository accountRepository;
+    private Acc_UserService userService;
     private Acc_TransactionProcessorFactory transactionProcessorFactory;
     private Acc_BalanceProcessorFactory balanceProcessorFactory;
 
@@ -41,13 +43,9 @@ public class Acc_TransactionBalanceServiceImpl implements Acc_TransactionBalance
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public Acc_TransactionAccount createTransaction(Acc_TransactionDTO transactionDTO, Long userId) throws Acc_AccountException, Acc_UserException {
-        Acc_User user = userRepository.findUserByUserId(userId)
-                .orElseThrow(()->new Acc_UserException("User not found"));
+        Acc_User user = userService.findUserById(userId);
         Acc_TransactionProcessor processor = transactionProcessorFactory.getProcessor(transactionDTO.getType());
         Acc_TransactionAccount transactionAccount = (Acc_TransactionAccount) processor.processCreateTransaction(transactionDTO, user);
-        if (transactionAccount == null) {
-            throw new Acc_AccountNonFound("Transaction is bad");
-        }
         return transactionAccount;
     }
 
@@ -74,16 +72,11 @@ public class Acc_TransactionBalanceServiceImpl implements Acc_TransactionBalance
     @Override
     @Transactional(readOnly = true)
     public Acc_BalanceDTO calculateBalance(Long accountId, Long userId) throws Acc_AccountNonFound, Acc_CurrencyMismatchException, Acc_AccountTypeMismatchException {
-        Acc_Account account = accountRepository.findAccountByIdAndUserUserId(accountId, userId)
-                .orElseThrow(() -> new Acc_AccountNonFound("This account not found"));
+        Acc_Account account = accountService.findAccount(accountId, userId);
         Acc_BalanceProcessor balanceProcessor = balanceProcessorFactory.getProcessor(account.getType());
         return balanceProcessor.process(account);
     }
 
-    @Autowired
-    public void setTransactionRepository(Acc_TransactionRepository transactionRepository) {
-        this.transactionRepository = transactionRepository;
-    }
 
     @Override
     public Acc_CurrencyAccount calculateBalance(Acc_CurrencyAccount account, Long userId) throws Acc_CurrencyMismatchException, Acc_AccountTypeMismatchException, Acc_AccountNonFound {
@@ -92,13 +85,8 @@ public class Acc_TransactionBalanceServiceImpl implements Acc_TransactionBalance
     }
 
     @Autowired
-    public void setUserRepository(Acc_UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setAccountRepository(Acc_AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public Acc_TransactionBalanceServiceImpl(Acc_UserService userService) {
+        this.userService = userService;
     }
 
     @Autowired

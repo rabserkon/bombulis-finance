@@ -1,11 +1,11 @@
 package com.social.network.authentication.module.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.social.network.authentication.module.dto.JwtSessionDTO;
 import com.social.network.authentication.module.component.exception.AuthenticationTokenException;
 import com.social.network.authentication.module.component.exception.CodeTokenCreateException;
 import com.social.network.authentication.module.component.exception.RedisConnectionException;
 import com.social.network.authentication.module.component.token.MultiAuthToken;
+import com.social.network.authentication.module.dto.JwtSessionDTO;
 import com.social.network.authentication.module.service.AuthenticationService.AuthenticationService;
 import com.social.network.authentication.module.service.BruteForceService.LockAuthenticationAttempt;
 import com.social.network.authentication.module.service.JWTControlService.JWTControlService;
@@ -16,7 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;

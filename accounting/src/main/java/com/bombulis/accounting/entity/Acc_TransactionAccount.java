@@ -1,10 +1,10 @@
 package com.bombulis.accounting.entity;
 
-import com.bombulis.accounting.service.TransactionService.TransactionProcessors.Acc_TransactionType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;

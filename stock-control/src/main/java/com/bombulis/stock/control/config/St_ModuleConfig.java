@@ -1,8 +1,5 @@
 package com.bombulis.stock.control.config;
 
-import com.bombulis.stock.control.service.OperationService.St_CurrencyService;
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;

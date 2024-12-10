@@ -4,8 +4,6 @@ import com.bombulis.stock.control.entity.St_Operation;
 import com.bombulis.stock.control.model.St_OperationDTO;
 import com.bombulis.stock.control.service.AccountService.St_AccountException;
 import com.bombulis.stock.control.service.AccountService.St_AccountNotFoundException;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface St_OperationService {
 

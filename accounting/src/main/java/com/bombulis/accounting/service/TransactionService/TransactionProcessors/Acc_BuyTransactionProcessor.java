@@ -9,9 +9,6 @@ import com.bombulis.accounting.repository.Acc_TransactionRepository;
 import com.bombulis.accounting.service.AccountService.Acc_AccountService;
 import com.bombulis.accounting.service.AccountService.Acc_AccountType;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountException;
-import com.bombulis.accounting.service.AccountService.exception.Acc_AccountNonFound;
-import com.bombulis.accounting.service.AccountService.exception.Acc_AccountTypeMismatchException;
-import com.bombulis.accounting.service.TransactionService.exception.Acc_CurrencyMismatchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +21,11 @@ import java.sql.Timestamp;
 @Transactional
 public class Acc_BuyTransactionProcessor implements Acc_TransactionProcessor {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Autowired
     private Acc_AccountService accountService;
-    @Autowired
     private Acc_AccountRepository accountRepository;
-    @Autowired
     private Acc_TransactionRepository transactionRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public Acc_Transaction processCreateTransaction(Acc_TransactionDTO transactionDTO, Acc_User user) throws Acc_AccountException {
@@ -74,5 +68,20 @@ public class Acc_BuyTransactionProcessor implements Acc_TransactionProcessor {
     @Override
     public Acc_TransactionType getType() {
         return Acc_TransactionType.BUY;
+    }
+
+    @Autowired
+    public void setAccountService(Acc_AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    @Autowired
+    public void setAccountRepository(Acc_AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
+
+    @Autowired
+    public void setTransactionRepository(Acc_TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
     }
 }

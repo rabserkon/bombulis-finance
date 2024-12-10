@@ -34,7 +34,6 @@ public class Acc_AuthenticationServiceImpl implements Acc_AuthenticationService,
 
     private final String SERVICE_NAME = "finance-service";
 
-
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
@@ -46,14 +45,9 @@ public class Acc_AuthenticationServiceImpl implements Acc_AuthenticationService,
     public Acc_MultiAuthToken authenticationByJwt(String token)  {
         try {
             Map<String,Object> authData = this.decodeToken(token);
-            Long userId = ((Integer) authData.get("id")).longValue();
-            Object service = authData.get("service");
-            if (service == null) {
-                throw new BadCredentialsException("Your token valid, you need generate token on local service...");
-            }
             return new Acc_MultiAuthToken(
-                    userId,
-                    (List<Acc_Role>) convertRoles(authData.get("roles")),
+                    ((Integer) authData.get("id")).longValue(),
+                    new ArrayList<>(),
                     (String) authData.get("uuid")
             );
         } catch (JwtException | NullPointerException | ClassCastException e){

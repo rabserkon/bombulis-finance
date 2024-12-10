@@ -45,7 +45,7 @@ public class Acc_RevaluationAccountServiceImpl implements Acc_RevaluationAccount
     @Override
     public List<Acc_Account> getRevaluationAccountList(List<Acc_Account> accountList, String currencyISO, Date date) throws Acc_AccountOtherType, Acc_CurrencyMismatchException, Acc_AccountTypeMismatchException, Acc_AccountNonFound, Acc_ServerDataAssetsException, Acc_CurrencyNonFound, Acc_CurrencyRateException {
         List<Acc_Account> balanceList = new ArrayList<>();
-        Acc_Currency revaluationCurrency = currencyService.findCurrency(currencyISO);
+        Acc_Currency revaluationCurrency = currencyService.findCurrencyByIsoCode(currencyISO);
         Map<String, Acc_RateDTO> cryptocurrencyRates = exchangeRateService.getExchangeRate(revaluationCurrency, currencyService.getAllCurrencies(), date);
         Map<String, Acc_RateDTO> currencyRates = exchangeRateService.getExchangeRate(revaluationCurrency, currencyService.getAllCurrencies(), date);
         for (Acc_Account account : accountList){

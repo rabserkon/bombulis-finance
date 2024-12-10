@@ -8,9 +8,9 @@ import com.bombulis.accounting.entity.Acc_TransactionAccount;
 import com.bombulis.accounting.entity.Acc_User;
 import com.bombulis.accounting.repository.Acc_AccountRepository;
 import com.bombulis.accounting.repository.Acc_TransactionRepository;
+import com.bombulis.accounting.service.AccountService.Acc_AccountService;
 import com.bombulis.accounting.service.AccountService.Acc_AccountType;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountNonFound;
-import com.bombulis.accounting.service.AccountService.Acc_AccountService;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountTypeMismatchException;
 import com.bombulis.accounting.service.TransactionService.exception.Acc_CurrencyMismatchException;
 import org.slf4j.Logger;
@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 
 @Service
@@ -29,15 +27,10 @@ import java.sql.Timestamp;
 public class Acc_DefaultTransactionProcessor implements Acc_TransactionProcessor {
 
     private Acc_AccountService accountService;
-
     private Acc_AccountRepository accountRepository;
-
     private Acc_TransactionRepository transactionRepository;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    private EntityManager entityManager;
 
     @Override
     @Transactional

@@ -2,7 +2,6 @@ package com.bombulis.accounting.service.TransactionService;
 
 import com.bombulis.accounting.dto.Acc_EquityTransactionDTO;
 import com.bombulis.accounting.entity.Acc_EquityTransactionAccount;
-import com.bombulis.accounting.entity.Acc_TransactionAccount;
 import com.bombulis.accounting.entity.Acc_User;
 import com.bombulis.accounting.proto.Transaction;
 import com.bombulis.accounting.proto.TransactionServiceGrpc;

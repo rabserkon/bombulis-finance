@@ -6,7 +6,6 @@ import com.bombulis.stock.control.model.St_OperationType;
 import com.bombulis.stock.control.model.St_StockMatchProfile;
 import com.bombulis.stock.control.proto.AccountOuterClass;
 import com.bombulis.stock.control.proto.AccountServiceGrpc;
-import com.bombulis.stock.control.proto.Currency;
 import com.bombulis.stock.control.repository.St_AccountRepository;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

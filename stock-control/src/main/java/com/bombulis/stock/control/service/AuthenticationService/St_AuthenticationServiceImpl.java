@@ -15,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 
 @Service
@@ -27,8 +28,6 @@ public class St_AuthenticationServiceImpl implements St_AuthenticationService, S
 
     @Value("${jwt.expiration}")
     private Long expiration;
-
-
     private final String SERVICE_NAME = "st-service";
 
 
@@ -43,17 +42,9 @@ public class St_AuthenticationServiceImpl implements St_AuthenticationService, S
     public St_MultiAuthToken authenticationByJwt(String token)  {
         try {
             Map<String,Object> authData = this.decodeToken(token);
-            Long userId = ((Integer) authData.get("id")).longValue();
-            Object service = authData.get("service");
-            if (service == null) {
-                throw new BadCredentialsException("Your token valid, you need generate token on local service...");
-            }
-            if (!(service.toString()).equals(SERVICE_NAME)){
-                throw new BadCredentialsException("Your token valid, you need generate token on local service...");
-            }
             return new St_MultiAuthToken(
-                    userId,
-                    (List<St_Role>) convertRoles(authData.get("roles")),
+                    ((Integer) authData.get("id")).longValue(),
+                    new ArrayList<>(),
                     (String) authData.get("uuid")
             );
         } catch (JwtException | NullPointerException | ClassCastException e){

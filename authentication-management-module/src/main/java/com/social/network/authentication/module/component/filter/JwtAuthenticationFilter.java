@@ -1,8 +1,7 @@
 package com.social.network.authentication.module.component.filter;
 
-import com.social.network.authentication.module.dto.UserSecurity;
-import com.social.network.authentication.module.component.exception.AuthenticationTokenException;
 import com.social.network.authentication.module.component.token.MultiAuthToken;
+import com.social.network.authentication.module.dto.UserSecurity;
 import com.social.network.authentication.module.service.AuthenticationService.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

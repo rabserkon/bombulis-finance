@@ -22,6 +22,7 @@ services:
     image: wurstmeister/kafka:2.13-2.7.0
     ports:
       - "9093:9093"
+      - "9092:9092"
     depends_on:
         - zookeeper
     environment:
@@ -34,6 +35,18 @@ services:
         KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - finance
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8099:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-broker:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
     networks:
       - finance
 

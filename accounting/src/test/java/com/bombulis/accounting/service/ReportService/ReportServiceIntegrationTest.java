@@ -3,7 +3,7 @@ package com.bombulis.accounting.service.ReportService;
 import com.bombulis.accounting.config.Acc_DatabaseConfig;
 import com.bombulis.accounting.config.Acc_ModuleConfig;
 import com.bombulis.accounting.dao.AccTransactionDaoIntegrationTest;
-import com.bombulis.accounting.model.dao.Acc_AccountReport;
+import com.bombulis.accounting.model.dao.Acc_AccountReportEvent;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountNonFound;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountOtherType;
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountTypeMismatchException;
@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 public class ReportServiceIntegrationTest {
 
     @Autowired
-    private Acc_ReportService reportService;
+    private Acc_ReportServiceImpl reportService;
 
     private static final Logger logger = LoggerFactory.getLogger(AccTransactionDaoIntegrationTest.class);
 
@@ -40,10 +40,8 @@ public class ReportServiceIntegrationTest {
         LocalDateTime startPeriod = LocalDateTime.of(2024, 1, 1, 0, 0);
         LocalDateTime endPeriod = LocalDateTime.of(2024, 12, 31, 23, 59);
 
-        Acc_AccountReport accountReport = reportService.createAccountReport(accountId,userId, startPeriod, endPeriod);
+        Acc_AccountReportEvent accountReport = reportService.createAccountReport(accountId,userId, startPeriod, endPeriod);
 
         logger.info(accountReport.toString());
-
-        reportService.sendAccountReport(accountReport);
     }
 }

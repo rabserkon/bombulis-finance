@@ -1,9 +1,9 @@
 package com.social.network.authentication.module.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.social.network.authentication.module.dto.JwtSessionDTO;
 import com.social.network.authentication.module.component.exception.RedisConnectionException;
 import com.social.network.authentication.module.component.token.MultiAuthToken;
+import com.social.network.authentication.module.dto.JwtSessionDTO;
 import com.social.network.authentication.module.service.JWTControlService.JWTControlService;
 import com.social.network.authentication.module.service.JWTControlService.SessionInfo;
 import org.springframework.beans.factory.annotation.Autowired;

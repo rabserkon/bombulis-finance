@@ -9,7 +9,6 @@ import com.bombulis.accounting.service.RevaluationService.Acc_ExchangeRateServic
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,7 +42,7 @@ public class Acc_CurrencyController {
                                                 Authentication authentication) throws Acc_CurrencyNonFound, Acc_ServerDataAssetsException, Acc_CurrencyRateException {
         Map<String, Object> response = new HashMap<>();
         response.put("currencies", rateService.getExchangeRate(
-                currencyService.findCurrency(currency),
+                currencyService.findCurrencyByIsoCode(currency),
                 currencyService.getAllCurrencies(),
                 new Date()
                 ));

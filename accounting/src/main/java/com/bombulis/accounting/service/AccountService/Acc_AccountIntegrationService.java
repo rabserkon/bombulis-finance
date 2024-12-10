@@ -10,7 +10,6 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 

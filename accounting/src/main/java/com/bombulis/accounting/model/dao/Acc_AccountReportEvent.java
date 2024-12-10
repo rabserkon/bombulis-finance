@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Acc_AccountReport {
+public class Acc_AccountReportEvent {
     private String statementId;  // Идентификатор выписки
     private String accountNumber; // Номер счета
     private String accountHolderName; // Имя владельца счета
@@ -23,7 +23,7 @@ public class Acc_AccountReport {
     private String documentType;
 
 
-    public Acc_AccountReport(String documentType) {
+    public Acc_AccountReportEvent(String documentType) {
         this.documentType = documentType;
     }
 }

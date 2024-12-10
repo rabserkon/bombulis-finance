@@ -1,15 +1,11 @@
 package com.social.network.authentication.module.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.WebApplicationInitializer;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.multipart.support.MultipartFilter;
-import org.springframework.web.servlet.DispatcherServlet;
 
-import javax.servlet.*;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 @Configuration
 @PropertySource("classpath:application-${spring.profiles.active}.properties")

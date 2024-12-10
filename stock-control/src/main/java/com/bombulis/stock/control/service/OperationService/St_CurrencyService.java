@@ -4,7 +4,6 @@ import com.bombulis.stock.control.entity.St_Currency;
 import com.bombulis.stock.control.proto.Currency;
 import com.bombulis.stock.control.proto.CurrencyServiceGrpc;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
