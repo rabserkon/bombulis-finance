@@ -156,7 +156,7 @@ services:
     container_name: authentication-module
     volumes:
       - ./services/redis/certs:/redis
-    image: rabserkon/authentication:cfcf86b12e283f51b2489737f8cf2acf7d2a9a53
+    image: rabserkon/authentication:latest
     ports:
       - "8079:8080"
     depends_on:
