@@ -156,6 +156,9 @@ services:
     container_name: authentication-module
     volumes:
       - ./services/redis/certs:/redis
+#    build:
+#       context: ./authentication-management-module
+#       dockerfile: Dockerfile
     image: rabserkon/authentication:latest
     ports:
       - "8079:8080"
