@@ -119,7 +119,6 @@ public class CredentialRecoveryServiceImpl implements CredentialRecoveryService{
     public void setNotificationSenderService(NotificationSenderService notificationSenderService) {
         this.notificationSenderService = notificationSenderService;
     }
-
     @Autowired
     public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;

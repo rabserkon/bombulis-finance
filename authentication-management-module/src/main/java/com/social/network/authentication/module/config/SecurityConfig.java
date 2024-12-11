@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @PropertySource("classpath:application-${spring.profiles.active}.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
     private AuthenticationService authenticationService;
 
     @Override

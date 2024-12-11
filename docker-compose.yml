@@ -88,7 +88,7 @@ services:
 
   db-auth:
     container_name: "db_a_tth"
-    image: postgres:latest
+    image: postgres:17
     ports:
       - "5433:5432"
     environment:
@@ -152,32 +152,33 @@ services:
 #      - finance
 #
 #
-#  authentication:
-#    container_name: authentication-module
-#    volumes:
-#      - ./services/redis/certs:/redis
-#    build:
-#      context: ./authentication-management-module/
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8079:8080"
-#    depends_on:
-#      - db
-#      - login-token-db
-#    environment:
-#      DATASOURCE_URL: ${DATASOURCE_URL}
-#      DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
-#      DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
-#      DATASOURCE_DRIVER: ${DATASOURCE_DRIVER}
-#      JWT_SECRET: ${JWT_SECRET}
-#      JWT_EXPIRATION: ${JWT_EXPIRATION}
-#      RECAPTCHA_SITE_KEY: ${RECAPTCHA_SITE_KEY}
-#      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
-#      LOGIN_TOKEN_DB_HOST: ${LOGIN_TOKEN_DB_HOST}
-#      LOGIN_TOKEN_DB_PORT: ${LOGIN_TOKEN_DB_PORT}
-#      LOGIN_TOKEN_DB_PASSWORD: ${LOGIN_TOKEN_DB_PASSWORD}
-#    networks:
-#      - main
+  authentication:
+    container_name: authentication-module
+    volumes:
+      - ./services/redis/certs:/redis
+    build:
+      context: ./authentication-management-module/
+      dockerfile: Dockerfile
+    ports:
+      - "8079:8080"
+    depends_on:
+      - db-auth
+      - login-token-db
+    environment:
+      DATASOURCE_URL: ${AUTH_DATASOURCE_URL}
+      DATASOURCE_USERNAME: ${AUTH_DATASOURCE_USERNAME}
+      DATASOURCE_PASSWORD: ${AUTH_DATASOURCE_PASSWORD}
+      DATASOURCE_DRIVER: ${AUTH_DATASOURCE_DRIVER}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      RECAPTCHA_SITE_KEY: ${RECAPTCHA_SITE_KEY}
+      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
+      LOGIN_TOKEN_DB_HOST: ${LOGIN_TOKEN_DB_HOST}
+      LOGIN_TOKEN_DB_PORT: ${LOGIN_TOKEN_DB_PORT}
+      LOGIN_TOKEN_DB_PASSWORD: ${LOGIN_TOKEN_DB_PASSWORD}
+      BROKER_HOST: ${BROKER_HOST}
+    networks:
+      - main
 
 networks:
   finance:

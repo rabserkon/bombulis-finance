@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: auth-db
-          image: postgres:latest
+          image: postgres:17
           ports:
             - containerPort: 5432
           env:

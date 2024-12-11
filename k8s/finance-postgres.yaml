@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: finance-db
-          image: 'postgres:14'
+          image: postgres:17
           ports:
             - containerPort: 5432
           env:
