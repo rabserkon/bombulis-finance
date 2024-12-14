@@ -11,3 +11,4 @@ data:
   RECAPTCHA_SITE_KEY: 6LfeBXwfAAAAAJsA9RCj-edZlIlBNJYYQXCGKZC_
   LOGIN_TOKEN_DB_HOST: session-db.auth.svc.cluster.local
   LOGIN_TOKEN_DB_PORT: "6379"
+  BROKER_HOST: kafka-broker.default.svc.cluster.local:9092

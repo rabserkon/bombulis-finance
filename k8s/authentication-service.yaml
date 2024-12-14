@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: authentication-service
-          image: rabserkon/authentication:cfcf86b12e283f51b2489737f8cf2acf7d2a9a53
+          image: rabserkon/authentication:latest
           ports:
             - containerPort: 8080
           imagePullPolicy: Always
@@ -80,6 +80,12 @@ spec:
               secretKeyRef:
                 name: auth-secrets
                 key: LOGIN_TOKEN_DB_PASSWORD
+          - name: BROKER_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: auth-config
+                key: BROKER_HOST
+
 ---
 apiVersion: v1
 kind: Service
@@ -92,5 +98,5 @@ spec:
     app: authentication
   ports:
     - protocol: TCP
-      port: 8081
+      port: 8080
       targetPort: 8080

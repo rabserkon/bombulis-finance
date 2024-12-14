@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final String AUTHORIZATION_HEADER = "AuthorizationGlobal";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private DefaultBearerTokenResolver bearerTokenResolver = new DefaultBearerTokenResolver();
     private AuthenticationEntryPoint authenticationEntryPoint = new OAuth2AuthenticationEntryPoint();

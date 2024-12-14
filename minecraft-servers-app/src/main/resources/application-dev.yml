@@ -1,0 +1,20 @@
+server:
+  port: 8091
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9093
+    consumer:
+      bootstrap-servers: localhost:9093
+      group-id: mine-serv-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+
+
+jwt:
+  secret: 85f7dd24c7e24c44c90988742465dda35c75f40286ed4fa566a3a8fd5c0daefe
