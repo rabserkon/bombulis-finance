@@ -2,8 +2,7 @@ package com.bombulis.accounting.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 

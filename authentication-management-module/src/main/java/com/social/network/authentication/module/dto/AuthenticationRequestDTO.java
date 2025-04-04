@@ -1,7 +1,7 @@
 package com.social.network.authentication.module.dto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class AuthenticationRequestDTO {
     @NotNull(message = "Principal must not be null")

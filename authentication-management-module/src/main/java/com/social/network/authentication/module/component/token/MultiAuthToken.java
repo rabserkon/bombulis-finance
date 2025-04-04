@@ -3,19 +3,19 @@ package com.social.network.authentication.module.component.token;
 import com.social.network.authentication.module.dto.UserSecurity;
 import com.social.network.authentication.module.entity.Role;
 import lombok.Getter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
-public class MultiAuthToken implements Authentication {
+public class MultiAuthToken extends AbstractAuthenticationToken {
 
     @Getter
     private final Long userId;
     @Getter
     private final Collection<Role> role;
-    @Getter
-    private final String password;
     @Getter
     private final String uuidUser;
     @Getter
@@ -25,32 +25,27 @@ public class MultiAuthToken implements Authentication {
 
     public MultiAuthToken(Long userId,
                           Collection<Role> role,
-                          String password,
                           String uuidUser) {
+        super(new ArrayList<>());
         this.userId = userId;
         this.role = role;
-        this.password = password;
         this.uuidUser = uuidUser;
         this.auth =true;
     }
 
     public MultiAuthToken(UserSecurity userSecurity) {
+        super(new ArrayList<>());
         this.userId = userSecurity.getUserId();
         this.role = userSecurity.getRoles();
-        this.password = userSecurity.getPasswordEncrypted();
         this.uuidUser = userSecurity.getUuid();
         this.sessionToken = userSecurity.getSessionToken();
         this.auth = true;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role;
-    }
 
     @Override
     public Object getCredentials() {
-        return password;
+        return null;
     }
 
     @Override

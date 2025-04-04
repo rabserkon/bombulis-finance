@@ -1,44 +1,60 @@
 package com.bombulis.accounting.config;
 
-import com.bombulis.accounting.component.filter.Acc_JwtTokenFilter;
-import com.bombulis.accounting.service.AuthenticationService.Acc_AuthenticationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.bombulis.accounting.component.CustomJwtAuthenticationConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.web.SecurityFilterChain;
+
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
 @PropertySource("classpath:application-${spring.profiles.active}.properties")
-public class Acc_SecurityConfig extends WebSecurityConfigurerAdapter {
+public class Acc_SecurityConfig {
 
-    @Autowired
-    private Acc_AuthenticationService authenticationService;
+    @Value("${jwt.secret}")
+    private String secret;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        Acc_JwtTokenFilter jwtTokenFilter = new Acc_JwtTokenFilter();
-        jwtTokenFilter.setAuthenticationService(authenticationService);
-        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .cors().disable()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/**").authenticated()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .anyRequest().authenticated();
+    @Value("${jwt.expiration}")
+    private Long expiration;
+
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize ->
+                        authorize
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers( "/**").authenticated()
+                                .requestMatchers("/finance/error").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2
+                                .jwt(jwt -> jwt
+                                        .decoder(jwtDecoder())
+                                        .jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())
+                                )
+                );
+        return http.build();
     }
 
     @Bean
@@ -46,5 +62,12 @@ public class Acc_SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        String secretKeyBase64 = secret;
+        byte[] decodedKey = Base64.getDecoder().decode(secretKeyBase64);
+        SecretKeySpec key = new SecretKeySpec(decodedKey, "HmacSHA256");
+        return NimbusJwtDecoder.withSecretKey(key).build();
+    }
 
 }

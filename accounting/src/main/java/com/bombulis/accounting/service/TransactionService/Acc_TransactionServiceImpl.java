@@ -2,13 +2,13 @@ package com.bombulis.accounting.service.TransactionService;
 
 import com.bombulis.accounting.entity.Acc_TransactionAccount;
 import com.bombulis.accounting.repository.Acc_TransactionRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;

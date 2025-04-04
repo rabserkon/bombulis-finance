@@ -3,6 +3,7 @@ package com.social.network.authentication.module.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.social.network.authentication.module.component.exception.AuthenticationTokenException;
 import com.social.network.authentication.module.component.exception.CodeTokenCreateException;
+import com.social.network.authentication.module.component.exception.NotFoundException;
 import com.social.network.authentication.module.component.exception.RedisConnectionException;
 import com.social.network.authentication.module.dto.UserSecurity;
 import com.social.network.authentication.module.entity.AuthToken;
@@ -22,7 +23,7 @@ import com.social.network.authentication.module.service.NotificationService.Noti
 import com.social.network.authentication.module.service.NotificationService.NotificationSenderService;
 import com.social.network.authentication.module.service.TokenService.ValideData;
 import io.jsonwebtoken.JwtException;
-import javassist.NotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;

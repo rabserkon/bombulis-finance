@@ -6,6 +6,8 @@ import com.social.network.authentication.module.service.CaptchaService.ICaptchaS
 import com.social.network.authentication.module.service.CredentialRecoveryService.TokenException;
 import com.social.network.authentication.module.service.RegistrationService.RegistrationException;
 import com.social.network.authentication.module.service.RegistrationService.RegistrationService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +31,8 @@ public class RegistrationController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/registration")
     public ResponseEntity<?> registration(HttpServletRequest request,
-                                               @Valid @RequestBody UserDTO userDTO,
-                                               @RequestParam("g-recaptcha-response") String recaptcha) throws RegistrationException, IOException {
+                                          @Valid @RequestBody UserDTO userDTO,
+                                          @RequestParam("g-recaptcha-response") String recaptcha) throws RegistrationException, IOException {
             Map<String, Object> response = new HashMap<>();
             captchaService.processResponse(recaptcha, request.getHeader("X-FORWARDED-FOR"));
             ResponseRegistrationDTO token = registrationService.registrationUserAndConfirmToken(userDTO);

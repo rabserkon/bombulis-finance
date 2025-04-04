@@ -2,8 +2,7 @@ package com.bombulis.accounting.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
 public class Acc_SecurityAccount extends Acc_Assets {

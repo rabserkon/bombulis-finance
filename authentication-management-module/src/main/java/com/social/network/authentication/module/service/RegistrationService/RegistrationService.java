@@ -5,9 +5,8 @@ import com.social.network.authentication.module.dto.ResponseRegistrationDTO;
 import com.social.network.authentication.module.dto.UserDTO;
 import com.social.network.authentication.module.entity.User;
 import com.social.network.authentication.module.service.CredentialRecoveryService.TokenException;
-
-import javax.mail.AuthenticationFailedException;
-import javax.mail.MessagingException;
+import jakarta.mail.AuthenticationFailedException;
+import org.springframework.messaging.MessagingException;
 
 public interface RegistrationService {
 

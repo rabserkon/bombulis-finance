@@ -1,12 +1,12 @@
 package com.bombulis.accounting.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;

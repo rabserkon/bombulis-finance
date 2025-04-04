@@ -7,6 +7,8 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 
+import java.util.concurrent.CompletableFuture;
+
 @Service
 public class KafkaProducerService {
     private final KafkaTemplate<String, Object> kafkaTemplate;
@@ -19,13 +21,6 @@ public class KafkaProducerService {
     }
 
     public void sendRegistrationEvent(RegistrationEvent event) {
-        ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(registrationTopic, event);
-        future.addCallback(
-                result -> {
-                    // write your Successful send logic here
-                },
-                ex -> {
-                    // write your customer error handling logic here
-                });
+        CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(registrationTopic, event);
     }
 }

@@ -1,12 +1,10 @@
 package com.social.network.authentication.module.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
 
 @Entity
 @Table(name = "role_at_sr_v1")

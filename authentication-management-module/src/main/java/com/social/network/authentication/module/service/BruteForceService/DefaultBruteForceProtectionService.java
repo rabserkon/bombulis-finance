@@ -1,15 +1,14 @@
 package com.social.network.authentication.module.service.BruteForceService;
 
+import com.social.network.authentication.module.component.exception.NotFoundException;
 import com.social.network.authentication.module.service.AuthenticationService.AuthenticationServiceImpl;
-import eu.bitwalker.useragentutils.UserAgent;
-import javassist.NotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -116,11 +115,7 @@ public class DefaultBruteForceProtectionService implements BruteForceProtectionS
     }
 
     public static String getBrowserData(HttpServletRequest request){
-        final UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
-        return  "Device: " + userAgent.getOperatingSystem().getDeviceType().getName()+ ", " +
-                userAgent.getOperatingSystem().getName() + ", " +
-                userAgent.getBrowser().getName() + " " +
-                userAgent.getBrowserVersion();
+        return  "Device: " + "null";
     }
 
     private String calculateBlockTime(int seconds){

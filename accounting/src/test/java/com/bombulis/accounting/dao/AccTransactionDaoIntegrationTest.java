@@ -19,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Acc_ModuleConfig.class, Acc_DatabaseConfig.class})

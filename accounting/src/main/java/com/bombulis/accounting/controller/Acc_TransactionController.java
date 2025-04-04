@@ -10,6 +10,7 @@ import com.bombulis.accounting.service.TransactionService.Acc_SearchCriteria;
 import com.bombulis.accounting.service.TransactionService.Acc_TransactionBalanceService;
 import com.bombulis.accounting.service.TransactionService.Acc_TransactionService;
 import com.bombulis.accounting.service.UserService.Acc_UserException;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;

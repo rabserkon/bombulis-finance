@@ -1,16 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: finance-module
+  name: finance-main-service
+  namespace: finance
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: finance-module
+      app: finance-main-service
   template:
     metadata:
       labels:
-        app: finance-module
+        app: finance-main-service
     spec:
       containers:
         - name: finance-module
@@ -36,18 +37,18 @@ spec:
                   key: DB_NAME
             - name: DB_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: finance-config
+                secretKeyRef:
+                  name: finance-secrets
                   key: DB_PASSWORD
             - name: JWT_SECRET
               valueFrom:
-                configMapKeyRef:
-                  name: finance-config
+                secretKeyRef:
+                  name: finance-secrets
                   key: JWT_SECRET
             - name: JWT_EXPIRATION
               valueFrom:
-                configMapKeyRef:
-                  name: finance-config
+                secretKeyRef:
+                  name: finance-secrets
                   key: JWT_EXPIRATION
             - name: BROKER_HOST
               valueFrom:
@@ -69,6 +70,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: finance-module
+  namespace: finance
 spec:
   type: LoadBalancer
   selector:

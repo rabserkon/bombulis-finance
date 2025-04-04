@@ -10,6 +10,7 @@ import com.bombulis.accounting.service.AccountService.Acc_FinancingSourcesServic
 import com.bombulis.accounting.service.AccountService.exception.Acc_AccountException;
 import com.bombulis.accounting.service.CurrencyService.Acc_CurrencyNonFound;
 import com.bombulis.accounting.service.UserService.Acc_UserException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;

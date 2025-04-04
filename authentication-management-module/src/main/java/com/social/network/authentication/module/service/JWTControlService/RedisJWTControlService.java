@@ -3,14 +3,13 @@ package com.social.network.authentication.module.service.JWTControlService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.social.network.authentication.module.component.exception.RedisConnectionException;
-import eu.bitwalker.useragentutils.UserAgent;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -140,11 +139,7 @@ public class RedisJWTControlService implements JWTControlService{
     }
 
     public static String getBrowserData(HttpServletRequest request){
-        final UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
-        return  "Device: " + userAgent.getOperatingSystem().getDeviceType().getName()+ ", " +
-                userAgent.getOperatingSystem().getName() + ", " +
-                userAgent.getBrowser().getName() + " " +
-                userAgent.getBrowserVersion();
+        return  "Device: " + "null";
     }
 
     @Autowired

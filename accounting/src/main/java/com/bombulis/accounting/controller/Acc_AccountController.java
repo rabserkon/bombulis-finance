@@ -16,6 +16,7 @@ import com.bombulis.accounting.service.CurrencyService.Acc_CurrencyNonFound;
 import com.bombulis.accounting.service.TransactionService.Acc_TransactionBalanceService;
 import com.bombulis.accounting.service.TransactionService.exception.Acc_CurrencyMismatchException;
 import com.bombulis.accounting.service.UserService.Acc_UserException;
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

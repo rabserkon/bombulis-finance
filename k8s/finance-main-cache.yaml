@@ -1,16 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: redis-cache
+  name: finance-main-cache
+  namespace: finance
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis-cache
+      app: finance-main-cache
   template:
     metadata:
       labels:
-        app: redis-cache
+        app: finance-main-cache
     spec:
       containers:
         - name: redis-cache
@@ -21,8 +22,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-cache
-  namespace: default
+  name: finance-main-cache
+  namespace: finance
 spec:
   selector:
     app: redis-cache

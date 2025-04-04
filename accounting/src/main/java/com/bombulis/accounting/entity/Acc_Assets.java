@@ -1,8 +1,7 @@
 package com.bombulis.accounting.entity;
 
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
 @NoArgsConstructor
