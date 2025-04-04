@@ -30,10 +30,7 @@ public class RedisConfig {
     @Value("${spring.redis.ssl}")
     private boolean sslEnabled;
 
-    private ResourceLoader resourceLoader;
-
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
 
     @Bean
     @Profile("prod")
@@ -65,8 +62,4 @@ public class RedisConfig {
         return template;
     }
 
-    @Autowired
-    public void setResourceLoader(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
-    }
 }

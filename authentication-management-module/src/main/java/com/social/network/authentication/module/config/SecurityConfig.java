@@ -1,49 +1,65 @@
 package com.social.network.authentication.module.config;
 
-import com.social.network.authentication.module.component.filter.JwtAuthenticationFilter;
-import com.social.network.authentication.module.component.filter.LogoutFilter;
-import com.social.network.authentication.module.service.AuthenticationService.AuthenticationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.social.network.authentication.module.component.CustomJwtAuthenticationConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
+import org.springframework.security.web.SecurityFilterChain;
+
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
 
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:application-${spring.profiles.active}.properties")
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig  {
 
-    @Autowired
-    private AuthenticationService authenticationService;
+    @Value("${jwt.secret}")
+    private String secret;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
-        jwtAuthenticationFilter.setAuthenticationService(authenticationService);
-        http.addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(new LogoutFilter(), org.springframework.security.web.authentication.logout.LogoutFilter.class)
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .cors().disable()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/registration").not().authenticated()
-                .antMatchers("/registration/confirm").not().authenticated()
-                .antMatchers(HttpMethod.POST, "/validate/user").permitAll()
-                .antMatchers(HttpMethod.POST, "/credential/update", "/credential/reset", "/validate/token").permitAll()
-                .antMatchers("/service/status", "/get/recaptcha/key").permitAll()
-                .antMatchers("/registration/token/confirm").permitAll()
-                .antMatchers("/login").not().authenticated()
-                .anyRequest().authenticated()
-                .and().logout().logoutUrl("/logout/0");
+    @Value("${jwt.expiration}")
+    private Long expiration;
+
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize ->
+                        authorize
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers( "/**").authenticated()
+                                .requestMatchers("/auth/error").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2
+                                .jwt(jwt -> jwt
+                                        .decoder(jwtDecoder())
+                                        .jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())
+                                )
+                );
+        return http.build();
     }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        String secretKeyBase64 = secret;
+        byte[] decodedKey = Base64.getDecoder().decode(secretKeyBase64);
+        SecretKeySpec key = new SecretKeySpec(decodedKey, "HmacSHA256");
+        return NimbusJwtDecoder.withSecretKey(key).build();
+    }
+
 }

@@ -63,7 +63,7 @@ services:
       - finance
 
   stock-db:
-    image: postgres:latest
+    image: postgres:17
     container_name: stock-db
     environment:
       POSTGRES_DB: ${STOCK_DB_NAME}

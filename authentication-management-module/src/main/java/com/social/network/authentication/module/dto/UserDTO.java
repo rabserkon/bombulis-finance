@@ -2,11 +2,10 @@ package com.social.network.authentication.module.dto;
 
 
 import com.social.network.authentication.module.entity.User;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.*;
 
 @NoArgsConstructor
 public class UserDTO {

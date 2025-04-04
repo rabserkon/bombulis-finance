@@ -1,9 +1,9 @@
 package com.bombulis.accounting.model;
 
 import com.bombulis.accounting.service.AccountService.Acc_AccountType;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 public class Acc_AccountTypeValidator implements ConstraintValidator<Acc_ValidAccountType, String> {
     @Override

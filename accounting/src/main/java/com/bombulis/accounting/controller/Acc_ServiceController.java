@@ -22,6 +22,7 @@ import com.bombulis.accounting.service.TransactionService.Acc_SearchCriteria;
 import com.bombulis.accounting.service.TransactionService.Acc_TransactionService;
 import com.bombulis.accounting.service.TransactionService.exception.Acc_CurrencyMismatchException;
 import com.bombulis.accounting.service.UserService.Acc_NotFoundUser;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -34,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;

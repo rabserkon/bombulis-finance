@@ -7,6 +7,8 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 
+import java.util.concurrent.CompletableFuture;
+
 @Component
 public class Acc_KafkaMessageProducer {
 
@@ -15,14 +17,14 @@ public class Acc_KafkaMessageProducer {
     private static final String KAFKA_TOPIC_REPORT = "reports-topic";
 
     public void sendAccountReportEvent(Acc_AccountReportEvent event) {
-        ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(KAFKA_TOPIC_REPORT, event);
-        future.addCallback(
+        CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(KAFKA_TOPIC_REPORT, event);
+        /*future.addCallback(
                 result -> {
                     // write your Successful send logic here
                 },
                 ex -> {
                     // write your customer error handling logic here
-                });
+                });*/
     }
 
     public void sendMessage(String topic, String message) {

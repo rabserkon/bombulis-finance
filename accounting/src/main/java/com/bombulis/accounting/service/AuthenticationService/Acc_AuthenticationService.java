@@ -1,8 +1,8 @@
 package com.bombulis.accounting.service.AuthenticationService;
 
 import com.bombulis.accounting.component.Acc_MultiAuthToken;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 
 public interface Acc_AuthenticationService {
     /**

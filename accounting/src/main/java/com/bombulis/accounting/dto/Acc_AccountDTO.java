@@ -2,12 +2,11 @@ package com.bombulis.accounting.dto;
 
 import com.bombulis.accounting.entity.Acc_Account;
 import com.bombulis.accounting.model.Acc_ValidAccountType;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor

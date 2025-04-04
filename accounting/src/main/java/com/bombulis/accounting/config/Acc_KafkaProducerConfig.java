@@ -12,7 +12,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.listener.ErrorHandler;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
@@ -43,12 +42,6 @@ public class Acc_KafkaProducerConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 
-    @Bean
-    public ErrorHandler kafkaErrorHandler() {
-        return (exception, data) -> {
-            logger.error("Error processing message: ", exception);
-        };
-    }
 
 
 

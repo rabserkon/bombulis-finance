@@ -1,12 +1,12 @@
 package com.bombulis.accounting.component;
 
 import lombok.Getter;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-public class Acc_MultiAuthToken implements Authentication {
+public class Acc_MultiAuthToken extends AbstractAuthenticationToken {
 
     @Getter
     private final Long userId;
@@ -22,6 +22,7 @@ public class Acc_MultiAuthToken implements Authentication {
     public Acc_MultiAuthToken(Long userId,
                               Collection<Acc_Role> role,
                               String uuidUser) {
+        super(role);
         this.userId = userId;
         this.role = role;
         this.password = "[null]";
@@ -29,10 +30,6 @@ public class Acc_MultiAuthToken implements Authentication {
         this.auth = true;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role;
-    }
 
     @Override
     public Object getCredentials() {

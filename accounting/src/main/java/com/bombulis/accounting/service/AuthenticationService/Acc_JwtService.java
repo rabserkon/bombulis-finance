@@ -1,6 +1,7 @@
 package com.bombulis.accounting.service.AuthenticationService;
 
-import io.jsonwebtoken.JwtException;
+
+import org.springframework.security.oauth2.jwt.JwtException;
 
 import java.util.Map;
 

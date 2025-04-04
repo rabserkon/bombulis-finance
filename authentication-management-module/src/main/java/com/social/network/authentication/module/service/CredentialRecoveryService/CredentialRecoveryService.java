@@ -1,7 +1,7 @@
 package com.social.network.authentication.module.service.CredentialRecoveryService;
 
 import com.social.network.authentication.module.component.exception.AuthenticationTokenException;
-import javassist.NotFoundException;
+import com.social.network.authentication.module.component.exception.NotFoundException;
 
 /**
  * Интерфейс для сервиса восстановления учетных данных.

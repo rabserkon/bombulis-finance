@@ -3,12 +3,11 @@ package com.social.network.authentication.module.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.social.network.authentication.module.component.exception.AuthenticationTokenException;
 import com.social.network.authentication.module.component.exception.CodeTokenCreateException;
+import com.social.network.authentication.module.component.exception.NotFoundException;
 import com.social.network.authentication.module.component.exception.RedisConnectionException;
 import com.social.network.authentication.module.dto.UserSecurity;
 import com.social.network.authentication.module.service.BruteForceService.LockAuthenticationAttempt;
-import javassist.NotFoundException;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Интерфейс для сервиса аутентификации пользователей.

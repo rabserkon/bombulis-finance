@@ -4,7 +4,6 @@ import com.bombulis.accounting.entity.Acc_Currency;
 import com.bombulis.accounting.proto.Currency;
 import com.bombulis.accounting.proto.CurrencyServiceGrpc;
 import com.bombulis.accounting.repository.Acc_CurrencyRepository;
-import com.bombulis.accounting.repository.Acc_UserRepository;
 import com.bombulis.accounting.service.UserService.Acc_UserException;
 import com.bombulis.accounting.service.UserService.Acc_UserService;
 import io.grpc.stub.StreamObserver;

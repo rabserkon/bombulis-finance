@@ -2,8 +2,8 @@ package com.social.network.authentication.module.service.JWTControlService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.social.network.authentication.module.component.exception.RedisConnectionException;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface JWTControlService {

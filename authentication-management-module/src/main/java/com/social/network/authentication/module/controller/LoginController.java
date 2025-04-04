@@ -3,6 +3,7 @@ package com.social.network.authentication.module.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.social.network.authentication.module.component.exception.AuthenticationTokenException;
 import com.social.network.authentication.module.component.exception.CodeTokenCreateException;
+import com.social.network.authentication.module.component.exception.NotFoundException;
 import com.social.network.authentication.module.component.exception.RedisConnectionException;
 import com.social.network.authentication.module.component.token.MultiAuthToken;
 import com.social.network.authentication.module.dto.JwtSessionDTO;
@@ -10,7 +11,9 @@ import com.social.network.authentication.module.service.AuthenticationService.Au
 import com.social.network.authentication.module.service.BruteForceService.LockAuthenticationAttempt;
 import com.social.network.authentication.module.service.JWTControlService.JWTControlService;
 import com.social.network.authentication.module.service.JWTControlService.SessionInfo;
-import javassist.NotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

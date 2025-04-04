@@ -8,6 +8,8 @@ import io.kubernetes.client.openapi.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +23,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@PropertySource("classpath:application-${spring.profiles.active}.yml")
 public class KubernetesService {
 
     private  CoreV1Api coreV1Api;
 
-    private static final String NAMESPACE = "minecraft-server";
+    @Value("k8s.namespace")
+    private String namespace;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -54,7 +58,7 @@ public class KubernetesService {
                             .requests(Collections.singletonMap("memory", new Quantity(serverConfig.getMemory() + "Mi")))
                             .requests(Collections.singletonMap("cpu", new Quantity(serverConfig.getCpu()+ "m")))
                             .limits(Map.of(
-                                    "memory", new Quantity(2048 + "Mi"),  // Лимит по памяти
+                                    "memory", new Quantity(2048 + "Mi"),
                                     "cpu", new Quantity(500 + "m")         // Лимит по CPU
                             )))
                     .ports(List.of(
@@ -63,11 +67,11 @@ public class KubernetesService {
             V1Pod pod = new V1Pod()
                     .metadata(new V1ObjectMeta()
                             .name("minecraft-server-" + serverUUID)  // Имя пода включает UUID сервера
-                            .namespace(NAMESPACE))
+                            .namespace(namespace))
                     .spec(new V1PodSpec()
                             .addContainersItem(minecraftContainer));
 
-            coreV1Api.createNamespacedPod(NAMESPACE, pod, null, null, null, null);
+            coreV1Api.createNamespacedPod(namespace, pod, null, null, null, null);
         } catch (ApiException e) {
             logger.info(e.getResponseBody());
             throw new KubernetesServiceException(e.getResponseBody());
@@ -126,7 +130,7 @@ public class KubernetesService {
         try {
             coreV1Api.deleteNamespacedPod(
                     podName, // Имя пода
-                    NAMESPACE,                        // Пространство имен
+                    namespace,                        // Пространство имен
                     null,                              // Учетные данные, если нужно
                     null,                              // Параметры пропуска
                     null,                              // Параметры удаления
@@ -146,7 +150,7 @@ public class KubernetesService {
         try {
             V1Pod podStatus = coreV1Api.readNamespacedPodStatus(
                     podName,  // Имя пода
-                    NAMESPACE,                         // Пространство имен
+                    namespace,                         // Пространство имен
                     null
             );
 

@@ -6,6 +6,7 @@ import com.social.network.authentication.module.component.token.MultiAuthToken;
 import com.social.network.authentication.module.dto.JwtSessionDTO;
 import com.social.network.authentication.module.service.JWTControlService.JWTControlService;
 import com.social.network.authentication.module.service.JWTControlService.SessionInfo;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,18 +1,17 @@
 package com.social.network.authentication.module.controller;
 
 import com.social.network.authentication.module.component.exception.AuthenticationTokenException;
+import com.social.network.authentication.module.component.exception.NotFoundException;
 import com.social.network.authentication.module.service.CaptchaService.ICaptchaService;
 import com.social.network.authentication.module.service.CredentialRecoveryService.CredentialRecoveryService;
 import com.social.network.authentication.module.service.CredentialRecoveryService.TokenException;
 import com.social.network.authentication.module.service.CredentialRecoveryService.UserAccountException;
-import javassist.NotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

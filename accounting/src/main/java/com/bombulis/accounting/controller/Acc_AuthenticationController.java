@@ -1,11 +1,11 @@
 package com.bombulis.accounting.controller;
 
 import com.bombulis.accounting.service.AuthenticationService.Acc_AuthenticationService;
-import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;

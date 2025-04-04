@@ -1,8 +1,8 @@
 package com.social.network.authentication.module.service.BruteForceService;
 
-import javassist.NotFoundException;
+import com.social.network.authentication.module.component.exception.NotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 
 public interface BruteForceProtectionService {
 
